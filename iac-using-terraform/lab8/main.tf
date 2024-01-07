@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = ">= 1.5.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -9,9 +9,14 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = "ap-southeast-1"
 }
 
+#==========Keypair===================
+resource "aws_key_pair" "udemy-keypair" {
+  key_name   = "udemy-keypair"
+  public_key = file(var.keypair_path)
+}
 #====================================
 
 module "network" {

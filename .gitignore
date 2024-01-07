@@ -1,6 +1,3 @@
-# Ignore keypair folder
-keypair/
-
 # Ignore Terraform state files
 *.tfstate
 *.tfstate.backup

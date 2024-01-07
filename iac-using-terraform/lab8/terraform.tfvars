@@ -1,5 +1,10 @@
-availability_zones    = ["us-west-2a", "us-west-2b"]
-cidr_block            = "10.0.0.0/16"
+region             = "ap-southeast-1"
+availability_zones = ["ap-southeast-1a", "ap-southeast-1b"]
+instance_type      = "t3.micro"
+key_name = "cmc-mac-key"
+workstation_ip = "14.161.37.85/32"
+cidr_block = "10.10.0.0/16"
+ami_id = ""
 bastion_instance_type = "t3.micro"
 app_instance_type     = "t3.micro"
 db_instance_type      = "t3.micro"

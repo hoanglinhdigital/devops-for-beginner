@@ -41,5 +41,4 @@ variable "amis" {
 variable "keypair_path" {
   type = string
   default = "./keypair/udemy-key.pub"
-  
 }

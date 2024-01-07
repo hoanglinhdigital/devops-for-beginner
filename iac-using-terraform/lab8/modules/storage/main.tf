@@ -10,7 +10,7 @@ terraform {
 
 #tfsec:ignore:aws-ec2-enforce-http-token-imds
 resource "aws_instance" "mongo" {
-  ami                    = "ami-02868af3c3df4b3aa"
+  ami                    = "ami-0fa377108253bf620" #Ubuntu 22.04
   instance_type          = var.instance_type
   key_name               = var.key_name
   subnet_id              = var.subnet_id
