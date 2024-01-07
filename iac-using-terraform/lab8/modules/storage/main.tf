@@ -10,7 +10,7 @@ terraform {
 
 #tfsec:ignore:aws-ec2-enforce-http-token-imds
 resource "aws_instance" "mongo" {
-  ami                    = "ami-0fa377108253bf620" #Ubuntu 22.04
+  ami                    = var.ami
   instance_type          = var.instance_type
   key_name               = var.key_name
   subnet_id              = var.subnet_id
@@ -27,7 +27,7 @@ resource "aws_instance" "mongo" {
   sudo apt-get install -y nginx
   sudo systemctl start nginx
   sudo systemctl enable nginx
-  echo "<h1>CloudAcademy 2021</h1>" | sudo tee /var/www/html/index.html
+  echo "<h1>Udemy 2021</h1>" | sudo tee /var/www/html/index.html
 	EOF
   */
 
@@ -35,6 +35,6 @@ resource "aws_instance" "mongo" {
 
   tags = {
     Name  = "Mongo"
-    Owner = "CloudAcademy"
+    Owner = "Udemy"
   }
 }

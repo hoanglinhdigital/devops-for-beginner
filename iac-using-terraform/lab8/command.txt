@@ -1,0 +1,11 @@
+#Require: re-use keypair from lab2
+#NOTE: PLEASE USE SINGAPORE REGION!!!!
+
+#Reference: Terraform Excercise No4 from CloudAcademy:
+https://github.com/cloudacademy/terraform-aws
+
+#Commands Terraform:
+terraform init
+terraform plan --var-file "terraform.tfvars"
+terraform apply --var-file "terraform.tfvars"
+terraform destroy --var-file "terraform.tfvars"

@@ -12,23 +12,6 @@ terraform {
   }
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  # Canonical
-  owners = ["099720109477"]
-}
-
 #====================================
 
 data "template_cloudinit_config" "config" {
@@ -83,13 +66,14 @@ data "template_cloudinit_config" "config" {
   }
 }
 
+
 #====================================
 
 #tfsec:ignore:aws-ec2-enforce-launch-config-http-token-imds
 resource "aws_launch_template" "apptemplate" {
   name = "application"
 
-  image_id               = data.aws_ami.ubuntu.id
+  image_id               = var.ami
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [var.webserver_sg_id]
@@ -99,7 +83,7 @@ resource "aws_launch_template" "apptemplate" {
 
     tags = {
       Name  = "FrontendApp"
-      Owner = "CloudAcademy"
+      Owner = "Udemy"
     }
   }
 
@@ -228,7 +212,7 @@ resource "aws_autoscaling_group" "asg" {
 data "aws_instances" "application" {
   instance_tags = {
     Name  = "FrontendApp"
-    Owner = "CloudAcademy"
+    Owner = "Udemy"
   }
 
   instance_state_names = ["pending", "running"]

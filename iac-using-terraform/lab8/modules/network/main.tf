@@ -14,7 +14,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.0.0"
 
-  name = "CloudAcademy"
+  name = "Udemy"
   cidr = var.cidr_block
 
   azs             = var.availability_zones
@@ -25,7 +25,7 @@ module "vpc" {
   enable_vpn_gateway = false
 
   tags = {
-    Name = "CloudAcademy"
+    Name = "Udemy"
     Demo = "Terraform"
   }
 }

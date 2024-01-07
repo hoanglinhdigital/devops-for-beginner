@@ -1,0 +1,10 @@
+#Require: re-use keypair from lab2
+
+#Reference: Terraform State
+https://developer.hashicorp.com/terraform/language/settings/backends/s3
+
+#Commands Terraform:
+terraform init
+terraform plan --var-file "terraform.tfvars"
+terraform apply --var-file "terraform.tfvars"
+terraform destroy --var-file "terraform.tfvars"
