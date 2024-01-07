@@ -1,0 +1,10 @@
+#Require: re-use keypair from lab2
+
+#Reference: CloudAcademy Github repo:
+https://github.com/cloudacademy/terraform-aws
+
+#Commands Terraform:
+terraform init
+terraform plan --var-file "terraform.tfvars"
+terraform apply --var-file "terraform.tfvars"
+terraform destroy --var-file "terraform.tfvars"

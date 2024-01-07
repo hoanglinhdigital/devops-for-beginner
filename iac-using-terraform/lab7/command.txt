@@ -1,0 +1,13 @@
+#Require: re-use keypair from lab2
+
+#Reference: Terraform modules:
+https://developer.hashicorp.com/terraform/language/modules/syntax
+
+#Reference: Terraform vpc built-in module:
+https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest
+
+#Commands Terraform:
+terraform init
+terraform plan --var-file "terraform.tfvars"
+terraform apply --var-file "terraform.tfvars"
+terraform destroy --var-file "terraform.tfvars"
