@@ -1,0 +1,2 @@
+ “sudo xfs _growfs /dev/xvdf1” đối với xfs file system xem sao
+ 
