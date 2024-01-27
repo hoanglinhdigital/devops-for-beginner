@@ -1,0 +1,31 @@
+.quote {
+  height: 100vh;
+  position: relative;
+}
+
+.quote__text {
+  color: #175f73;
+  font-size: 20px;
+  position: absolute;
+  bottom: 380px;
+  left: 50%;
+  transform: translateX(-55%);
+}
+
+.quote__img1 {
+  width: 700px;
+  height: auto;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.quote__img2 {
+  width: 400px;
+  height: auto;
+  position: absolute;
+  bottom: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+}
