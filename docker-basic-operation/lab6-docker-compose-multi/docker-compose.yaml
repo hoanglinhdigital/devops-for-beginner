@@ -1,0 +1,29 @@
+version: '3'
+services:
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    ports:
+      - 8080:3000
+    volumes:
+      - ./web:/app  #This help mount working directory with container volume. Allow auto reload when code change.
+    environment:
+      - NODE_ENV=development
+    scale: 3
+  cache:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=Linh#4321
+      - MYSQL_DATABASE=testdb
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/var/lib/mysql  #This helps persist the database data even if the container is stopped or removed.
+volumes:
+  db:
+

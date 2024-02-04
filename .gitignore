@@ -20,3 +20,8 @@ terraform.rc
 node_modules/
 npm-debug.log
 yarn-error.log
+
+#Lab
+/docker-basic-operation/lab4-multi-stage-docker-file/node_modules
+/docker-basic-operation/lab4-multi-stage-docker-file/build
+db

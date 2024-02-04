@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Welcome to My Website</title>
+
+</head>
+
+<body>
+    <h1 style="color:green;">Welcome to My Website</h1>
+
+    <form action="/api/login" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <input type="button" value="Login" onclick="window.location.href='/learning'">
+        <input type="reset" value="Reset">
+    </form>
+</body>
+
+</html>

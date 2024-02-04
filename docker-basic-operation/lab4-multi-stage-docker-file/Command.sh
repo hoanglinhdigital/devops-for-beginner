@@ -17,3 +17,15 @@ docker run -d -p 8080:80 custom-httpd
 
 #Test trên browser
 http://localhost:8080
+
+#Clear resources:
+#list container
+docker ps -a
+#remove container
+docker rm -f <container-id>
+#list images
+docker images
+#remove images
+docker rmi tmp-nodejs
+docker rmi custom-httpd
+docker rmi <image id>

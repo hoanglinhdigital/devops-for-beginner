@@ -1,0 +1,46 @@
+version: '3'
+services:
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    ports:
+      - 3000
+    environment:
+      - NODE_ENV=development
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: always
+    networks:
+      - mynetwork
+  nginx:
+    image: nginx
+    restart: 'always'
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web    
+    networks:
+      - mynetwork
+  cache:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=Linh#4321
+      - MYSQL_DATABASE=testdb
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/var/lib/mysql
+volumes:
+  db:
+networks:
+  mynetwork:
+    driver: bridge
+
