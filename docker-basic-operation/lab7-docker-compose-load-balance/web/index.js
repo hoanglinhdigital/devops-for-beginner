@@ -1,14 +1,20 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 const fs = require('fs');
 
-// Serve static files from the "public" directory
-app.use(express.static('public'));
+const app = express();
 
-// Add a route for the root path ("/") that returns index.html
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Add a GET method for /learning route
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.redirect('/index.html');
+});
+
+// Add a GET method for /learning route
+app.get('/learning', (req, res) => {
+    res.redirect('/learning.html');
 });
 
 // Generate a random color

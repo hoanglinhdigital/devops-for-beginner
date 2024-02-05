@@ -37,7 +37,7 @@ resource "aws_lb_target_group" "nodejs_target_group" {
     port                = "3000"
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    timeout             = 3
-    interval            = 20
+    timeout             = 5
+    interval            = 30
   }
 }

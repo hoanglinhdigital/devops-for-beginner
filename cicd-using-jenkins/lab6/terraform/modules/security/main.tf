@@ -21,6 +21,13 @@ resource "aws_security_group" "public_security_group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  #Open port 3000 for debug only, disable it in production
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -47,7 +54,13 @@ resource "aws_security_group" "private_security_group" {
     protocol        = "tcp"
     security_groups = [aws_security_group.public_security_group.id]
   }
-
+  #Open port 3000 for debug only, disable it in production
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
