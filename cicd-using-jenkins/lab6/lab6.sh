@@ -8,6 +8,7 @@
 # ECS Service
 # Load Balancer
 # Target Group
+# Tham khảo file terraform/command.txt
 
 #Bước 2: Kiểm tra hoạt động của ECS thông qua ALB.
 
