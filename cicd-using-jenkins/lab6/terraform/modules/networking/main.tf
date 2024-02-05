@@ -1,6 +1,3 @@
-provider "aws" {
-  region = var.region
-}
 # Create VPC
 # Tôi sẽ sử dụng module VPC có sẵn của terraform để tạo VPC cho nhanh.
 module "vpc" {

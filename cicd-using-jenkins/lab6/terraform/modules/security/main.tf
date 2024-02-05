@@ -1,7 +1,3 @@
-provider "aws" {
-  region = var.region
-}
-
 resource "aws_security_group" "public_security_group" {
   name        = "public_security_group"
   description = "public_security_group"
