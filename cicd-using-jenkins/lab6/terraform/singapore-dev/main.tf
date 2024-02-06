@@ -47,7 +47,7 @@ module "load_balance" {
 }
 
 module "ecs_cluster"{
-  source = "../modules/ecs-cluster"
+  source = "../modules/ecs_cluster"
   region = var.region
   vpc_id = module.networking.vpc_id
   ecs_subnet_ids = module.networking.private_subnet_ids
