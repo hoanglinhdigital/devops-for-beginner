@@ -9,23 +9,22 @@ resource "aws_ecs_task_definition" "nodejs_task_definition" {
   // task_role_arn            = aws_iam_role.task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                   = "256"
-  memory                = "512"
+  cpu                   = "512"
+  memory                = "1024"
   container_definitions = <<DEFINITION
   [
     {
       "name": "nodejs-container",
       "image": "${var.nodejs_ecr_image_url}",
-      "cpu": 256,
-      "memory": 512,
+      "cpu": 512,
+      "memory": 1024,
       "portMappings": [
-          {
-              "name": "nodejs-3000-tcp",
-              "containerPort": 3000,
-              "hostPort": 3000,
-              "protocol": "tcp",
-              "appProtocol": "http"
-          }
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -106,7 +105,7 @@ resource "aws_ecs_service" "nodejs_service" {
   }
   cluster         = aws_ecs_cluster.udemy_devops_ecs_cluster.id
   task_definition = aws_ecs_task_definition.nodejs_task_definition.arn
-  desired_count   = 2
+  desired_count   = 3
   launch_type     = "FARGATE"
   // iam_role        = aws_iam_role.foo.arn
   //depends_on      = [aws_iam_role_policy.foo]
