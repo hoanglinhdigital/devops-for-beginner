@@ -11,6 +11,7 @@ https://github.com/hoanglinhdigital/nodejs-random-color
 #Chi tiết xem file lab7.groovy
 
 #3. Cấu hình để Github có thể trigger Jenkins build job tự động (sd webhook)
+#- Mở port 8080 cho security group của JEnkins allow all.
 #- Cài đặt plugin Github trong Jenkins nếu chưa cài
 #- Trong cấu hình của Build Job, chọn "GitHub hook trigger for GITScm polling"
 #- Trong repository trên Github, vào "Settings" > "Webhooks" > "Add webhook"

@@ -6,6 +6,9 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 
+#Copy public key vào Github account.​
+#Checkout thử 1 repo public thông qua SSH url.
+
 #Chỉnh setting của Github repository về private..​
 
 #Managed jenins -> Security -> Git hot key... -> Accept first connection.​
