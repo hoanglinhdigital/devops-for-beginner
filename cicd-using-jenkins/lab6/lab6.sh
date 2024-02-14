@@ -13,12 +13,19 @@
 #Bước 2: Kiểm tra hoạt động của ECS thông qua ALB.
 
 #Bước 3: Tạo một pipeline job trong Jenkins (Tham khảo file lab6.groovy)
+#Job name: Buildjob6-deploy-ecs
+#Update FULL_IMAGE thành ECR url của các bạn.
 #Trong pipeline job, sử dụng Jenkinsfile để thực hiện các bước sau:
-#Update task definition với image nhận version từ tham số parameter vd "ver-1", "ver-2"
+#Update task definition với image nhận version từ tham số parameter vd "ver-1", "ver-2", "latest"
 #Update service với task definition mới
 #Force deploy cho ECS Service
 
 #Bước 4: Chạy job và kiểm tra kết quả
+
+#=========TROUBLESHOOT LỖI "jq not found"=========
+#Cài đặt jq trên Jenkins server
+#sudo apt-get update
+#sudo apt-get install jq
 
 #Bước 5: Kiểm tra hoạt động của ECS thông qua ALB.
 

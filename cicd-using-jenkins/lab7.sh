@@ -7,16 +7,18 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 
 #Copy public key vào Github account.​
+
+#Chỉnh setting visibility của Github repository về "Private"​
+
 #Checkout thử 1 repo public thông qua SSH url.
 
-#Chỉnh setting của Github repository về private..​
-
-#Managed jenins -> Security -> Git hot key... -> Accept first connection.​
+#Managed jenins -> Security -> Git Host Key Verification Configuration -> Accept first connection.
 
 #Tạo một Build job mới có tên "Buildjob7-pipeline-from-SCM", trong "Pipeline", chọn "Pipeline script from SCM"​
 
 #Add credential "SSH username with private key" (sử dụng private key từ step 1).​
 
-#Tạo một Jenkins file và push lên repo.​
+#Tạo một Jenkins file tên: "Jenkinsfile" và push lên repo.​
+#Tham khảo file: lab7-Jenkinsfile.groovy
 
 #Chạy job build và kiểm tra kết quả.​
