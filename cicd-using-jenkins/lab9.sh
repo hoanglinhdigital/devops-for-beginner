@@ -28,4 +28,4 @@ git pull
 git tag -a v1.0.0 -m "Release v1.0.0"
 git push origin v1.0.0
 
-#   - Trigger build job release và chọn ACTION tương ứng.
+#   - Build job with parameter,  điền VERSION & chọn ACTION tương ứng.
