@@ -10,7 +10,7 @@ java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'
 
 #Cấu hình Maven cho Jenkins
 #Truy cập vào Jenkins -> Manage Jenkins -> Tool
-#Ở khu vực Maven Installation, chọn Add Maven, tick vào "Install automatically"
+#Ở khu vực Maven Installation, chọn Add Maven, điền tên và path tới Maven, ví dụ:
 #Nhấn Add installer chọn "Install from Apache"
 #Chọn version maven, ví dụ: 3.9.6
 #Click Save.
