@@ -18,11 +18,11 @@
 # - Truy cập Jenkins Dashboard
 # - Chọn "Manage Jenkins" -> "Manage Plugins"
 # - Chọn tab "Available" và tìm kiếm "Slack Notification Plugin"
-# - Chọn "Install without restart"
+# - Chọn "Install"
 
 # Bước 4: Cấu hình Slack Notification Plugin
 # - Truy cập Jenkins Dashboard
-# - Chọn "Manage Jenkins" -> "Configure System"
+# - Chọn "Manage Jenkins" -> "System"
 # - Tìm đến phần "Slack"
 # - Nhập Slack workspace name: vd "myworkspace"
 # - Tạo một Credential với type: Secret text, và nhập "Token" đã copy ở bước 2
@@ -32,4 +32,4 @@
 
 # Bước 5: Cấu hình Job Jenkins, thêm bước Notification Slack.
 # Tham khảo file lab11.groovy
-# Để đơn giản, mình sẽ sử dụng lại bài Lab5 (không cần provision ra ECS)
+# Để đơn giản, mình sẽ sử dụng lại bài Lab5 (không cần provision ra resource sd Terraform).
