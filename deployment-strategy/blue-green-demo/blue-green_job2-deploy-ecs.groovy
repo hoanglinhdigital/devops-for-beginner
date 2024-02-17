@@ -17,6 +17,7 @@ pipeline {
                     NEW_TASK_INFO=$(aws ecs register-task-definition --region "ap-southeast-1" --cli-input-json "$NEW_TASK_DEFINITION")
                     NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
                     aws ecs update-service --cluster ${CLUSTER_NAME} --service nodejs-service --task-definition ${TASK_FAMILY}:${NEW_REVISION} --force-new-deployment
+                    aws ecs update-service --cluster ${CLUSTER_NAME} --service nodejs-service --desired-count 2
                 '''
  
             }

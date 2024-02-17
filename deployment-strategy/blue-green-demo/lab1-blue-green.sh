@@ -79,7 +79,7 @@ git push origin v1.0.0
 
 #==========Step 6: Tạo Job Clear resource:
 #Tạo một Job Jenkins mới, đặt tên là BlueGreen-Job4-Clear-Resource.
-#Nhập tham số cho job: cluster_name (Choice), Cho chọn 2 giá trị là: udemy-devops-cluster-blue, udemy-devops-cluster-green
+#Nhập tham số cho job: CLUSTER_NAME (Choice), Cho chọn 2 giá trị là: udemy-devops-cluster-blue, udemy-devops-cluster-green
 #Sử dụng code Pipeline trong file: blue-green_job4-clear-resource.groovy
 #Save job lại.
 
