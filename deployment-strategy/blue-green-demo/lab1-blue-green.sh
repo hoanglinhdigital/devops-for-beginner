@@ -7,33 +7,33 @@
 # Job Clear resource: nhận tham số là Cluster name, có nhiệm vụ Stop hết task trên Cluster (hoặc chỉnh service capacity về 0).
 
 #=========Step 1: Tạo ECR Repository
-# Tạo một ECR repository ví dụ: nodejs-random-color
+# Tạo một ECR repository: nodejs-random-color
 # *Tham khảo lab số 5 của chương CICD Jenkins.
 
 #=========Step2: Tạo Job Build:
 #Fork repository sau về acount của bạn (Bỏ qua nếu vẫn còn repository của chương CICD Jenkins):
 https://github.com/hoanglinhdigital/nodejs-random-color
+
 #Tạo một Job Jenkins mới, đặt tên là BlueGreen-Job1-Build.
-#Nhập tham số cho job: version (String), default value: latest
+#Nhập tham số cho job: VERSION (String), default value: latest
 #Sử dụng code Pipeline trong file: blue-green_job1-build-docker.groovy
-#  -Sửa dòng 6: Link URL đến repo github của bạn (sau khi fork).
-#  -Sửa dòng 17, 18, 19: Thay đổi thông tin của ECR repository của bạn.
+#  -Sửa dòng 12: Link URL đến repo github của bạn (sau khi fork).
+#  -Sửa dòng 24,25,26: Thay đổi thông tin của ECR repository của bạn.
 #Save job lại.
 
-#Chỉnh sửa code html của trang index, thêm đoạn text "v1.0.0".
+#Chỉnh sửa code html của trang index, thêm đoạn text "v1.0.0" -> Commit và push code lên github.
+
 #Tạo một tag và push lên github repository của bạn. Vd: v1.0.0
-git checkout master
-git pull
 git tag -a v1.0.0 -m "Release v1.0.0"
 git push origin v1.0.0
 #Chạy job [BlueGreen-Job1-Build] với tham số version = v1.0.0
 #Kiểm tra job chạy thành công và image đã được push lên ECR repository.
 
 #=========Step 3: Sử dụng Terraform để deploy ra stack
-cd singapore-dev
+cd terraform/singapore-dev
 #Chỉnh sửa file sau: singapore-dev/terraform.tfvars
-#Dòng 8: ecr_repo_url ->chỉnh sửa thành url ECR repository của bạn ví dụ:
-430950558682.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color:v1.0.0
+#  - Dòng 6: ecr_repo_url ->chỉnh sửa thành url ECR repository của bạn ví dụ:
+     430950558682.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color:v1.0.0
 #Chạy các lệnh sau:
 terraform init
 terraform plan --var-file "terraform.tfvars"
@@ -54,9 +54,12 @@ terraform apply --var-file "terraform.tfvars"
 
 #Chạy thử và kiểm tra job deploy.
 #Chỉnh sửa code html của trang index, thêm đoạn text "v1.0.1".
+git add .
+git commit -m "Update version 1.0.1"
+git push origin master
 #Tạo một tag và push lên github repository của bạn. Vd: v1.0.1
-git tag -a v1.0.0 -m "Release v1.0.0"
-git push origin v1.0.0
+git tag -a v1.0.1 -m "Release v1.0.1"
+git push origin v1.0.1
 #Chạy job [BlueGreen-Job1-Build] với tham số version = v1.0.1
 #Kiểm tra job chạy thành công và image đã được push lên ECR repository.
 
@@ -65,17 +68,20 @@ git push origin v1.0.0
 #<ALB DNS>:/80 =>kết quả ra version 1.0.0
 #<ALB DNS>:/81 =>kết quả ra version 1.0.1
 
+
 #==========Step 5: Tạo Job Switch traffic:
+#Add Policy cho IAM Role của Jenkins để có quyền switch traffic giữa 2 Target Group.
+#Policy name: ElasticLoadBalancingFullAccess
+
 #Tạo một Job Jenkins mới, đặt tên là BlueGreen-Job3-Switch-Traffic.
-#Nhập tham số cho job: ALB_NAME (String), default value: <tên của Application LoadBalancer
 #Sử dụng code Pipeline trong file: blue-green_job3-switch-traffic.groovy
-#  - dòng 7: sửa <listener-arn-for-port-80> và <target-group-arn-for-blue> thành thông tin của bạn.
-#  - dòng 8: sửa <listener-arn-for-port-81> và <target-group-arn-for-green> thành thông tin của bạn.
+#  - Dòng 4 sửa thông tin ALB_ARN thành ARN của ALB của bạn.
 #Save job lại.
 
 #Chạy job [BlueGreen-Job3-Switch-Traffic] và kiểm tra trang index hiển thị đúng version trên cả 2 listener của ALB.
 #<ALB DNS>:/80 =>kết quả ra version 1.0.1
 #<ALB DNS>:/81 =>kết quả ra version 1.0.0
+
 
 #==========Step 6: Tạo Job Clear resource:
 #Tạo một Job Jenkins mới, đặt tên là BlueGreen-Job4-Clear-Resource.
