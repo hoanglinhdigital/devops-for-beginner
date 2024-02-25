@@ -1,0 +1,55 @@
+# Yêu cầu:
+# Tạo một Job trong CodeBuild có nhiệm vụ checkout một Nodejs project (từ CodeCommit).
+# Build
+# Push artifact lên S3. 
+
+#Step1: Tạo một repository trên CodeCommit
+#Tên repo: 
+udemy-devops-nodejs-webpack
+#Cấu hình SSH key hoặc username/password để push code lên repo.
+#Thử checkout code từ CodeCommit.
+
+#Step2: Chuẩn bị source code.
+#Checkout repo sau (Nodejs + Webpack):
+https://github.com/hoanglinhdigital/simple-vue-webpack.git
+#Copy vào trong thư mục CodeCommit project, modify nếu cần, push lên CodeCommit repository của bạn.
+
+#Step3: tạo một S3 bucket để chứa artifact. Ví dụ:
+udemy-devops-codebuild-linh
+
+#Step4: Tạo một Job trong CodeBuild
+#Tên job: 
+udemy-devops-nodejs-project-build
+
+#Chọn Source: CodeCommit, chọn repo: 
+udemy-devops-nodejs-project
+#Chọn Environment: 
+#  - Managed image, OS: Amazon Linux
+#  - Runtime: Standard
+#  - Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+#  - Image Version: Always use latest image...
+
+#Chọn Buildspec: Use a buildspec file
+#Buildspec name: điền vào là "buildspec.yml"
+
+#Chọn Artifacts: chọn No Artifacts *Lý do: Sẽ sử dụng command để upload trực tiếp lên S3.
+
+#Chọn Service role: Create a service role in your account (Hoặc chọn lại role ở bài lab2)
+
+#Aditional configuration: để mặc định.
+#Chọn CloudWatch logs: Create a new log group
+#Save job lại.
+
+#Step5: Tạo một file buildspec.yml trong thư mục code của project.
+#Tên file: buildspec.yml
+#Code: tham khảo file buildspec.yml trong thư mục lab3-codebuild-nodejs-webpack
+#Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
+#Push file này lên CodeCommit repository của bạn.
+
+#Step6: Chạy job và kiểm tra kết quả. 
+#Troubleshooting lỗi permission nếu có.
+#Nếu bị lỗi không tạo được cloudwatch Log, không pull được code hoặc acces S3, các bạn thêm các policy sau vào role của CodeBuild service role.
+AmazonS3FullAccess
+AWSCodeCommitFullAccess
+CloudWatchFullAccessV2
+CloudWatchLogsFullAccess
