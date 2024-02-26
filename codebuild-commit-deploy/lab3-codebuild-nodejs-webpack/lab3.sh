@@ -5,7 +5,7 @@
 
 #Step1: Tạo một repository trên CodeCommit
 #Tên repo: 
-udemy-devops-nodejs-webpack
+codecommit-nodejs-webpack
 #Cấu hình SSH key hoặc username/password để push code lên repo.
 #Thử checkout code từ CodeCommit.
 
@@ -22,7 +22,9 @@ udemy-devops-codebuild-linh
 udemy-devops-nodejs-project-build
 
 #Chọn Source: CodeCommit, chọn repo: 
-udemy-devops-nodejs-project
+codecommit-nodejs-webpack
+#Branch: chọn "main"
+
 #Chọn Environment: 
 #  - Managed image, OS: Amazon Linux
 #  - Runtime: Standard
@@ -42,7 +44,7 @@ udemy-devops-nodejs-project
 
 #Step5: Tạo một file buildspec.yml trong thư mục code của project.
 #Tên file: buildspec.yml
-#Code: tham khảo file buildspec.yml trong thư mục lab3-codebuild-nodejs-webpack
+#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
 #Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
 #Push file này lên CodeCommit repository của bạn.
 

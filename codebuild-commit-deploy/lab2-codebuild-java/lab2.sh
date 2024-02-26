@@ -5,7 +5,7 @@
 
 #Step1: Tạo một repository trên CodeCommit
 #Tên repo: 
-udemy-devops-java-project
+codecommit-java-project
 #Cấu hình SSH key hoặc username/password để push code lên repo.
 #Thử checkout code từ CodeCommit.
 
@@ -19,14 +19,14 @@ udemy-devops-codebuild-linh
 
 #Step4: Tạo một Job trong CodeBuild
 #Tên job: 
-udemy-devops-java-project-build
+codecommit-java-project-build
 
-#Chọn Source: CodeCommit, chọn repo: udemy-devops-java-project
+#Chọn Source: CodeCommit, chọn repo: codecommit-java-project
 #Chọn Environment: 
 #  - Managed image, OS: Ubuntu, 
 #  - Runtime: Standard
 #  - Image: aws/codebuild/standard:5.0
-#  - Image Version: aws/copdebuild/standard:5.0-21.10.15  (Lý do project java này sd version java hơi cũ.)
+#  - Image Version: aws/copdebuild/standard:5.0-21.10.15  (*Lý do project java này sd version java hơi cũ.)
 
 #Chọn Buildspec: Use a buildspec file
 #Buildspec name: điền vào là "buildspec.yml"
@@ -43,7 +43,7 @@ udemy-devops-java-project-build
 
 #Step5: Tạo một file buildspec.yml trong thư mục code của project.
 #Tên file: buildspec.yml
-#Code: tham khảo file buildspec.yml trong thư mục lab2-codebuild-java
+#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
 #Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
 #Push file này lên CodeCommit repository của bạn.
 
