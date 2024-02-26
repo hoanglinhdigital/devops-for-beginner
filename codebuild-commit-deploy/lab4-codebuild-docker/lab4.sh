@@ -25,17 +25,19 @@ dockerhub-password-secret
 
 #===Step5=== Tạo một Job trong CodeBuild
 #Tên job: 
-udemy-devops-nodejs-build-docker
+udemy-devops-nodejs-docker-build
 
 #Chọn Source: CodeCommit, chọn repo: 
 codecommit-nodejs-random-color
-#Branch: chọn "main"
+#Branch: chọn "master"
 
 #Chọn Environment: 
 #  - Managed image, OS: Ubuntu
 #  - Runtime: Standard
 #  - Image: aws/codebuild/standard:5.0
 #  - Image Version: Always use latest image...
+
+#Chọn Service role: Create a service role in your account (*Hoặc sử dụng lại role của bài lab 2).
 
 #Buildspec
 #Chọn Insert Build Command
@@ -46,9 +48,6 @@ codecommit-nodejs-random-color
 
 #Chọn Artifacts: chọn No Artifacts *Lý do: Sẽ sử dụng command để push image trực tiếp lên ECR.
 
-#Chọn Service role: Create a service role in your account
-#Nhập tên Role:
-codebuild-udemy-devops-nodejs-build-docker-service-role
 
 #Click vào: Additional configuration
 #Chỗ: Privileged, tick vào "Enable this flag if you want to build Docker images or want your builds to get elevated privileges"
