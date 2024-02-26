@@ -3,26 +3,27 @@
 # Build
 # Push artifact lên S3. 
 
-#Step1: Tạo một repository trên CodeCommit
-#Tên repo: 
+#===Step1===
+#Tạo một repository trên CodeCommit, tên repo: 
 codecommit-nodejs-random-color
 #Cấu hình SSH key hoặc username/password để push code lên repo.
 #Thử checkout code từ CodeCommit.
 
-#Step2: Chuẩn bị source code.
+#===Step2=== Chuẩn bị source code.
 #Checkout repo sau (Nodejs + Webpack):
 https://github.com/hoanglinhdigital/nodejs-random-color
 #Copy vào trong thư mục CodeCommit project, modify nếu cần, push lên CodeCommit repository của bạn.
 
-#Step3: tạo một ECR Repository để chứa docker image. Ví dụ:
+#===Step3===
+#tạo một ECR Repository để chứa docker image. Ví dụ:
 nodejs-random-color
 
-#Step4: Chuẩn bị một account DockerHub.
+#===Step4=== Chuẩn bị một account DockerHub.
 #Tạo 2 secret manager để lưu username/password của DockerHub. Type: Plaintext
 dockerhub-username-secret
 dockerhub-password-secret
 
-#Step5: Tạo một Job trong CodeBuild
+#===Step5=== Tạo một Job trong CodeBuild
 #Tên job: 
 udemy-devops-nodejs-build-docker
 
@@ -36,8 +37,12 @@ codecommit-nodejs-random-color
 #  - Image: aws/codebuild/standard:5.0
 #  - Image Version: Always use latest image...
 
-#Chọn Buildspec: Use a buildspec file
-#Buildspec name: điền vào là "buildspec.yml"
+#Buildspec
+#Chọn Insert Build Command
+#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
+#Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
+#  - Dòng 13: Thay lệnh login bằng lệnh lấy từ ECR.
+#  - Dòng 14 chỗ REPOSITORY_URI -> thay thế ECR repository của bạn vào.
 
 #Chọn Artifacts: chọn No Artifacts *Lý do: Sẽ sử dụng command để push image trực tiếp lên ECR.
 
@@ -51,18 +56,15 @@ codebuild-udemy-devops-nodejs-build-docker-service-role
 #Chọn CloudWatch logs: Create a new log group
 #Save job lại.
 
-#Step6: Add policy vào role của CodeBuild service role.
+#===Step6===
+#Add policy vào role của CodeBuild service role.
 AmazonEC2ContainerRegistryFullAccess
 SecretsManagerReadWrite
 
-#Step7: Tạo một file buildspec.yml trong thư mục code của project.
-#Tên file: buildspec.yml
-#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
-#  - Dòng 13: Thay lệnh login bằng lệnh lấy từ ECR.
-#  - Dòng 14 chỗ REPOSITORY_URI -> thay thế ECR repository của bạn vào.
-#Push file này lên CodeCommit repository của bạn.
+#===Step7=== Chạy job và kiểm tra kết quả. 
+#Expect: Image được push lên ECR thành công.
 
-#Step6: Chạy job và kiểm tra kết quả. 
+#================================================================================================
 #Troubleshooting lỗi permission nếu có.
 #Nếu bị một trong các lỗi không access được: Cloudwatch Log, ECR, S3, SecretManager, các bạn thêm các policy sau vào role của CodeBuild service role.
 AmazonS3FullAccess

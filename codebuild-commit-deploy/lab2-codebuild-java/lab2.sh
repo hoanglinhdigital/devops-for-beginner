@@ -25,15 +25,20 @@ codecommit-java-project-build
 #Chọn Environment: 
 #  - Managed image, OS: Ubuntu, 
 #  - Runtime: Standard
-#  - Image: aws/codebuild/standard:5.0
-#  - Image Version: aws/copdebuild/standard:5.0-21.10.15  (*Lý do project java này sd version java hơi cũ.)
+#  - Image: aws/codebuild/standard:7.0
+#  - Image Version: Always use latest image for runtime version
 
-#Chọn Buildspec: Use a buildspec file
-#Buildspec name: điền vào là "buildspec.yml"
+#Buildspec
+#Chọn Insert Build Command
+#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
+#Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
 
-#Chọn Artifacts: Type: Amazon S3, 
+#Artifacts 
+#Chọn Type: Amazon S3, 
 #  - Bucket name: <Tên bucket đã được các bạn tạo ra trước đó>
-#  - Name: java_simple
+#  - Name: demo_java_artifact
+#  - Path: <để trống>
+#  - Namespace type: None
 
 #Chọn Service role: Create a service role in your account
 
@@ -41,13 +46,7 @@ codecommit-java-project-build
 #Chọn CloudWatch logs: Create a new log group
 #Save job lại.
 
-#Step5: Tạo một file buildspec.yml trong thư mục code của project.
-#Tên file: buildspec.yml
-#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
-#Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
-#Push file này lên CodeCommit repository của bạn.
-
-#Step6: Chạy job và kiểm tra kết quả. 
+#Step5: Chạy job và kiểm tra kết quả. 
 #Troubleshooting lỗi permission nếu có.
 #Nếu bị lỗi không tạo được cloudwatch Log, không pull được code hoặc acces S3, các bạn thêm các policy sau vào role của CodeBuild service role.
 AmazonS3FullAccess

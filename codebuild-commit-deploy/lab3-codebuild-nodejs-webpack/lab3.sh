@@ -31,8 +31,10 @@ codecommit-nodejs-webpack
 #  - Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
 #  - Image Version: Always use latest image...
 
-#Chọn Buildspec: Use a buildspec file
-#Buildspec name: điền vào là "buildspec.yml"
+#Buildspec
+#Chọn Insert Build Command
+#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
+#Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
 
 #Chọn Artifacts: chọn No Artifacts *Lý do: Sẽ sử dụng command để upload trực tiếp lên S3.
 
@@ -42,13 +44,7 @@ codecommit-nodejs-webpack
 #Chọn CloudWatch logs: Create a new log group
 #Save job lại.
 
-#Step5: Tạo một file buildspec.yml trong thư mục code của project.
-#Tên file: buildspec.yml
-#Code: tham khảo file buildspec.yml trong thư mục cùng cấp với file này.
-#Tham khảo: danh sách runtime được codebuild hỗ trợ: https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
-#Push file này lên CodeCommit repository của bạn.
-
-#Step6: Chạy job và kiểm tra kết quả. 
+#Step5: Chạy job và kiểm tra kết quả. 
 #Troubleshooting lỗi permission nếu có.
 #Nếu bị lỗi không tạo được cloudwatch Log, không pull được code hoặc acces S3, các bạn thêm các policy sau vào role của CodeBuild service role.
 AmazonS3FullAccess
