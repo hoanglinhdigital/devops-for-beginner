@@ -7,6 +7,7 @@
 # Chạy job deploy với version mới.​
 # Kiểm tra và truy cập thông qua ALB => new version.​
 #===================================================================================================
+#Tham khảo ECS Deployment Controller: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeploymentController.html
 
 #===Lưu ý: Tái sử dụng lại job Build từ lab 4, sử dụng lại image đã build từ lab 4.
 
@@ -17,13 +18,20 @@
 #Tham khảo file command.sh để apply terraform.
 #Kiểm tra resource được tạo ra, truy cập ALB -> website lên là OK.
 
-#===Step2=== Tạo một Job trong Code Deploy có nhiệm vụ deploy ECR image lên ECS Cluster.
+#===Step3=== Tạo một Pipeline trong CodePipeline có nhiệm vụ deploy ECR image lên ECS Cluster.
 #Tạo một Application trong CodeDeploy, tạo một Deployment Group.
+udemy-devops-deploy-ecs-pipeline-bluegreen
+#Chọn tạo ra new ServiceRole, Rolename: 
+AWSCodePipeline-deploy-ecs-pipeline-bluegreen-role
 
-#===Step3=== Modify Code, đánh tag mới. Push lên CodeCommit.
 
-#===Step4=== Chạy lại job build, kiểm tra new Docker image mới được tạo ra.
 
-#===Step5=== Chạy job deploy với version mới.
+#===Step4=== Modify code, push lên CodeCommit.
+
+#===Step5=== Chạy Pipeline với version mới.
 
 #===Step6=== Kiểm tra và truy cập thông qua ALB => new version.
+
+#===Troubleshooting===
+#Nếu gặp lỗi khi chạy job deploy, kiểm tra lại các bước trên, xem log của job deploy.
+#Permission: Kiểm tra lại IAM role của CodeBuild, CodeDeploy, CodePipeline, ...

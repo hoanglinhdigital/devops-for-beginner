@@ -56,7 +56,7 @@ codecommit-nodejs-random-color
 #Save job lại.
 
 #===Step6===
-#Add policy vào role của CodeBuild service role.
+#Add policy vào role của CodeBuild service role, để cho phép CodeBuild push image lên ECR và đọc secret manager.
 AmazonEC2ContainerRegistryFullAccess
 SecretsManagerReadWrite
 
