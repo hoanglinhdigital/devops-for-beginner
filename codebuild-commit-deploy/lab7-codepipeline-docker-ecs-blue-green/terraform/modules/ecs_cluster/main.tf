@@ -115,5 +115,7 @@ resource "aws_ecs_service" "nodejs_service" {
     container_name   = "nodejs-container"
     container_port   = 3000
   }
-
+  deployment_controller {
+    type = "CODE_DEPLOY" // ECS Deployment Controller Type - CODE_DEPLOY or ECS
+  }
 }

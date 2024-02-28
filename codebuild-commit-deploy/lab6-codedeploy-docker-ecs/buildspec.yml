@@ -1,0 +1,35 @@
+version: 0.2
+env:
+  secrets-manager: 
+    DOCKERHUB_USERNAME: dockerhub-username-secret
+    DOCKERHUB_PASSWORD: dockerhub-password-secret
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 430950558682.dkr.ecr.ap-southeast-1.amazonaws.com
+      - REPOSITORY_URI=430950558682.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t nodejs-random-color .
+      - docker tag nodejs-random-color:latest $REPOSITORY_URI:latest
+      - docker tag nodejs-random-color:latest $REPOSITORY_URI:$COMMIT_HASH
+      - echo Writing image definitions file...
+      - printf '[{"name":"nodejs-container","imageUri":"%s"}]'
+        $REPOSITORY_URI:$COMMIT_HASH > imagedefinitions.json
+      - cat imagedefinitions.json
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$COMMIT_HASH
+      - echo Build completed on `date`
+artifacts:
+  files: imagedefinitions.json
