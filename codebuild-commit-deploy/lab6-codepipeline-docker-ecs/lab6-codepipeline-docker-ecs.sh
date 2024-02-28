@@ -23,7 +23,6 @@
 
 
 #===Step3=== Tạo một Pipeline trong CodePipeline có nhiệm vụ deploy ECR image lên ECS Cluster.
-#Tạo một Application trong CodeDeploy, tạo một Deployment Group.
 udemy-devops-deploy-ecs-pipeline-rollout
 #Chọn tạo ra new ServiceRole, Rolename: 
 AWSCodePipeline-deploy-ecs-pipeline-rollout-role
