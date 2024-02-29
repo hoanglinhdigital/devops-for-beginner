@@ -111,7 +111,7 @@ resource "aws_ecs_service" "nodejs_service" {
   //depends_on      = [aws_iam_role_policy.foo]
 
   load_balancer {
-    target_group_arn = var.nodejs_target_group_arn
+    target_group_arn = var.nodejs_target_group_blue_arn
     container_name   = "nodejs-container"
     container_port   = 3000
   }

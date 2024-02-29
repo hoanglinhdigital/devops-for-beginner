@@ -24,9 +24,14 @@ variable "alb_arn" {
   description = "The ARN of the Application Load Balancer"
   nullable = false
 }
-variable "nodejs_target_group_arn" {
+variable "nodejs_target_group_blue_arn" {
   type = string
-  description = "The ARN of the target group for the ECS Service"
+  description = "The ARN of the target group Blue for the ECS Service"
+  nullable = false
+}
+variable "nodejs_target_group_green_arn" {
+  type = string
+  description = "The ARN of the target group Green for the ECS Service"
   nullable = false
 }
 variable "nodejs_ecr_image_url" {

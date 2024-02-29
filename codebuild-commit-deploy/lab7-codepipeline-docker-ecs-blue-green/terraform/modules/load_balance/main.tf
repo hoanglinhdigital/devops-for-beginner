@@ -14,19 +14,46 @@ resource "aws_lb" "load_balancer" {
   }
 }
 
-#Load Balancer Listener
-resource "aws_lb_listener" "listener" {
+#Load Balancer Listener 80
+resource "aws_lb_listener" "listener80" {
   load_balancer_arn = aws_lb.load_balancer.arn
   port              = "80"
   protocol          = "HTTP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.nodejs_target_group.arn
+    target_group_arn = aws_lb_target_group.nodejs_target_group_blue.arn
   }
 }
-#Target Group
-resource "aws_lb_target_group" "nodejs_target_group" {
-  name        = "target-group"
+#Load Balancer Listener 81
+resource "aws_lb_listener" "listener81" {
+  load_balancer_arn = aws_lb.load_balancer.arn
+  port              = "81"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.nodejs_target_group_green.arn
+  }
+}
+#Target Group Blue
+resource "aws_lb_target_group" "nodejs_target_group_blue" {
+  name        = "target-group-blue"
+  port        = 3000
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "ip"
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    port                = "3000"
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 30
+  }
+}
+#Target Group Green
+resource "aws_lb_target_group" "nodejs_target_group_green" {
+  name        = "target-group-green"
   port        = 3000
   protocol    = "HTTP"
   vpc_id      = var.vpc_id

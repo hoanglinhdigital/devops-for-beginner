@@ -22,10 +22,12 @@
 #Tham khảo file buildspect.yml trong cùng thu muc với file này.
 
 
-#===Step3=== Tạo một Pipeline trong CodePipeline có nhiệm vụ deploy ECR image lên ECS Cluster.
+#===Step3=== Tạo một Deploy Application trong CodeDeploy có nhiệm vụ deploy theo kiểu blue-green lên ECS Cluster.
 udemy-devops-deploy-ecs-pipeline-rollout
 #Chọn tạo ra new ServiceRole, Rolename: 
 AWSCodePipeline-deploy-ecs-pipeline-rollout-role
+
+
 
 #===Step4=== Modify code, push lên CodeCommit.
 

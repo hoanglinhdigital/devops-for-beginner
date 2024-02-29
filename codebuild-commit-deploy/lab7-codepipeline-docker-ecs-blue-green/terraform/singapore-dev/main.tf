@@ -55,7 +55,8 @@ module "ecs_cluster"{
     module.security.private_security_group_id
   ]
   alb_arn = module.load_balance.alb_arn
-  nodejs_target_group_arn = module.load_balance.target_group_arn
+  nodejs_target_group_blue_arn = module.load_balance.target_group_blue_arn
+  nodejs_target_group_green_arn = module.load_balance.target_group_green_arn
   nodejs_ecr_image_url = var.ecr_repo_url
 
 }
