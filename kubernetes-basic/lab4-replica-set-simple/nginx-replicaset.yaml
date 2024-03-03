@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
-  name: nginx-set
+  name: nginx-replicaset
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: nginx
@@ -11,9 +11,10 @@ spec:
     metadata:
       labels:
         app: nginx
+        service_name: service_a
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.14.2
+      - name: nginx-container
+        image: nginx
         ports:
         - containerPort: 80

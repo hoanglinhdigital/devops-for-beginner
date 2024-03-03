@@ -59,7 +59,9 @@ udemy-devops-ecs-nodejs-deployment-group
 #===Step4: Deploy thử bằng CodeDeploy (Lưu ý bước này vẫn chưa có sự tham gia của CodePipline & trigger tự động.)
 #Modify code, push lên CodeCommit.
 #Chạy lại job của CodeBuild, kiểm tra ECR được tạo ra.
+
 #Truy cập vào Task Definition, tạo ra 1 revision mới với ECR image vừa build xong.
+
 #Truy cập vào ECS Cluster -> Service nodejs, chọn Update service.
 #Chọn revision mới (TaskDefinition vừa tạo ra)
 #Chọn deployment provider (powered by CodeDeploy).
@@ -68,6 +70,7 @@ udemy-devops-ecs-nodejs-deployment-group
 #Theo dõi quá trình deploy trong CodeDeploy, chờ tới bước waiting.
 #Truy cập ALB thông qua port 81 để kiểm tra version mới có OK không?
 #Nhấn nút: "Reroute traffic"
+
 #Truy cập ALB thông qua port 88 để kiểm tra version đã được switch sang OK.
 #Nhấn nút: Terminate original task set (xoá bỏ resource version cũ.)
 
@@ -79,6 +82,8 @@ udemy-devops-ecs-nodejs-deployment-group
     - imagedefinitions.json: tạo ra trong quá trình build.
     - imageDetail.json: tạo ra trong quá trình build.
     - appspec.yaml: copy nguyên từ CodeCommit repo trong quá trình build.
+    - taskdef.json: copy nguyên từ CodeCommit repo trong quá trình build.
+    
 #Read: https://docs.aws.amazon.com/codepipeline/latest/userguide/file-reference.html#file-reference-ecs-bluegreen
 
 #===Step2: Tạo một Pipeline trong CodePipeline.

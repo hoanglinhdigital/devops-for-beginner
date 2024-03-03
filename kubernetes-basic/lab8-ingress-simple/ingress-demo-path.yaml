@@ -1,0 +1,100 @@
+# service-a-deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: service-a
+  template:
+    metadata:
+      labels:
+        app: service-a
+    spec:
+      containers:
+      - name: service-a
+        image: hoanglinhdigital/nodejs-random-color:service-a
+        ports:
+        - containerPort: 3000
+
+---
+# service-a-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-a
+spec:
+  type: ClusterIP
+  selector:
+    app: service-a
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+
+---
+# service-b-deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: service-b
+  template:
+    metadata:
+      labels:
+        app: service-b
+    spec:
+      containers:
+      - name: service-b
+        image: hoanglinhdigital/nodejs-random-color:service-b
+        ports:
+        - containerPort: 3000
+
+---
+# service-b-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-b
+spec:
+  type: ClusterIP
+  selector:
+    app: service-b
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+
+---
+# ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/service-a"
+        backend:
+          service:
+            name: service-a
+            port:
+              number: 3000
+      - pathType: Prefix
+        path: "/service-b"
+        backend:
+          service:
+            name: service-b
+            port:
+              number: 3000
