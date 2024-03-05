@@ -1,4 +1,13 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+data:
+  MYSQL_ROOT_PASSWORD: "123456789"
+  name: "Linh"
+  age: "20"
+---
+apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: my-pv
@@ -57,9 +66,9 @@ spec:
       containers:
         - name: mysql
           image: mysql
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: password123
+          envFrom:
+            - configMapRef:
+                name: my-configmap
           ports:
             - containerPort: 3306
           volumeMounts:
@@ -69,3 +78,4 @@ spec:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: my-pvc
+
