@@ -60,4 +60,4 @@ kubectl get nodes
 
 
 #LƯU Ý: Xoá Cluster nếu không sử dụng đến để tránh tốn phí:
-kops delete cluster --name hoanglinhdigital.com --state=s3://udemy-devops-kops --yes --admin
+kops delete cluster --name hoanglinhdigital.com --state=s3://udemy-devops-kops --yes
