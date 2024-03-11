@@ -11,11 +11,11 @@ kops export kubecfg --name=hoanglinhdigital.com --state=s3://udemy-devops-kops
 
 #===Step1: Checkout repository sau (hoặc bất cứ project docker compose nào bạn thích):
 https://github.com/docker/awesome-compose
-#*Repository backup cho trường hợp repo bên trên bị xóa:
-https://github.com/hoanglinhdigital/awesome-compose
-
 #Repository bao gồm rất nhiều bài lab, ở đây mình chọn bài lab trong thư mục này để hướng dẫn các bạn:
 react-express-mongodb
+
+#*Repository backup cho trường hợp repo bên trên bị xóa:
+https://github.com/hoanglinhdigital/awesome-compose
 
 #Step2: Chạy thử bằng lệnh Docker Compose
 cd react-express-mongodb
