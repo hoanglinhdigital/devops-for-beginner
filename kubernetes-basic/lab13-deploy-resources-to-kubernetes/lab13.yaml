@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: mongo
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: mongo
   ports:
@@ -106,31 +106,24 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: example-ingress
-  annotations:
-    #kubernetes.io/ingress.class: "alb"
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-    alb.ingress.kubernetes.io/security-groups: "sg-0056b2bea7c961c60"
-    load.balancer.name: "lab13"
-    #nginx.ingress.kubernetes.io/rewrite-target: /
+  name: ingress-nginx
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
-  - http:
+  - host: 
+    http:
       paths:
-      - pathType: Prefix          
+      - pathType: Prefix
         path: /api
         backend:
           service:
             name: backend
-            port: 
-              number: 30099
-      - pathType: Prefix          
+            port:
+              number: 3000
+      - pathType: Prefix
         path: /
         backend:
           service:
             name: frontend
-            port: 
-              number: 30088
+            port:
+              number: 3000
