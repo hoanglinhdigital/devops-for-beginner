@@ -108,13 +108,15 @@ kind: Ingress
 metadata:
   name: example-ingress
   annotations:
-    kubernetes.io/ingress.class: "alb"
+    #kubernetes.io/ingress.class: "alb"
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: instance
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
     alb.ingress.kubernetes.io/security-groups: "sg-0056b2bea7c961c60"
+    load.balancer.name: "lab13"
     #nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: alb
   rules:
   - http:
       paths:
@@ -124,11 +126,11 @@ spec:
           service:
             name: backend
             port: 
-              number: 3000
+              number: 30099
       - pathType: Prefix          
         path: /
         backend:
           service:
             name: frontend
             port: 
-              number: 3000
+              number: 30088

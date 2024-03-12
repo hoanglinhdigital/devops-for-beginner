@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    meta.helm.sh/release-name: aws-load-balancer-controller
+    meta.helm.sh/release-namespace: kube-system
+  creationTimestamp: "2024-03-12T09:46:36Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/instance: aws-load-balancer-controller
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: aws-load-balancer-controller
+    app.kubernetes.io/version: v2.7.1
+    helm.sh/chart: aws-load-balancer-controller-1.7.1
+  name: aws-load-balancer-controller
+  namespace: kube-system
+  resourceVersion: "247798"
+  uid: 06f52209-d564-4ac9-905e-5e453ed12eb0
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: aws-load-balancer-controller
+      app.kubernetes.io/name: aws-load-balancer-controller
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: aws-load-balancer-controller
+        app.kubernetes.io/name: aws-load-balancer-controller
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - aws-load-balancer-controller
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - args:
+        - --cluster-name=my-hoanglinhdigital.com
+        - --ingress-class=alb
+        - --aws-region=ap-southeast-1
+        - --aws-vpc-id=vpc-005bcc5f352b57f1d
+        image: public.ecr.aws/eks/aws-load-balancer-controller:v2.7.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /healthz
+            port: 61779
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: aws-load-balancer-controller
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        - containerPort: 8080
+          name: metrics-server
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /readyz
+            port: 61779
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      priorityClassName: system-cluster-critical
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 65534
+      serviceAccount: aws-load-balancer-controller
+      serviceAccountName: aws-load-balancer-controller
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: aws-load-balancer-tls
+status:
+  conditions:
+  - lastTransitionTime: "2024-03-12T09:46:37Z"
+    lastUpdateTime: "2024-03-12T09:46:37Z"
+    message: Deployment does not have minimum availability.
+    reason: MinimumReplicasUnavailable
+    status: "False"
+    type: Available
+  - lastTransitionTime: "2024-03-12T09:46:37Z"
+    lastUpdateTime: "2024-03-12T09:46:37Z"
+    message: ReplicaSet "aws-load-balancer-controller-9cd456765" is progressing.
+    reason: ReplicaSetUpdated
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  replicas: 2
+  unavailableReplicas: 2
+  updatedReplicas: 2

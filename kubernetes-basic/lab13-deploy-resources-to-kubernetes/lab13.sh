@@ -4,6 +4,7 @@ kubectl cluster-info
 kubectl get nodes
 
 #Nếu bị outdate credential, chạy lại lệnh sau trên server kops:
+kops update cluster --name hoanglinhdigital.com --state=s3://udemy-devops-kops --yes
 kops export kubecfg --name=hoanglinhdigital.com --state=s3://udemy-devops-kops
 #Kết quả:
 #kOps has set your kubectl context to hoanglinhdigital.com
@@ -67,6 +68,37 @@ kubectl get ingress
 #===Step10: Xoá Cluster
 kops delete cluster --name hoanglinhdigital.com --state=s3://udemy-devops-kops --yes
 
+
+
+
+#Note 2024-03-12 - Create AWS Load Balancer controller.
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=aws-load-balancer-webhook-service.kube-system.svc"
+kubectl create secret generic aws-load-balancer-webhook-tls --from-file=tls.crt --from-file=tls.key -n kube-system
+kubectl get secret aws-load-balancer-webhook-tls -n kube-system
+
+# Kubernetes >= 1.15
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.2.0/docs/install/v2_2_0_full.yaml
+
+# Kubernetes < 1.15
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.2.0/docs/install/v2_2_0_full_legacy.yaml
+
+#Verify the deployment of the AWS Load Balancer Controller
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+
+##
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=hoanglinhdigital.com -n kube-system
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+kubectl get deployment aws-load-balancer-controller -o yaml -n kube-system > test-2.yaml
+#Modify test-2.yaml
+#Add below lines:
+      containers:
+      - args:
+        - --cluster-name=my-hoanglinhdigital.com
+        - --ingress-class=alb
+        - --aws-region=ap-southeast-1
+        - --aws-vpc-id=vpc-005bcc5f352b57f1d
 
 
 
