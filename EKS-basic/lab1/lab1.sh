@@ -1,48 +1,45 @@
 #Yêu cầu: Tạo một EKS Cluster và kết nối tới.
-#LƯU Ý: EKS khá tốn tiền nên các bạn lưu ý sử dụng cẩn thận!!!
-#Cấu hình yêu cầu: 2 nodes, 2vcpu, 4GB Ram (t3.medium).
-
-# Step 1: Tạo một EKS Cluster
-#Login vào AWS Console.
-#Chọn EKS -> Create Cluster
-#Chọn Cluster name: devops-test-eks-cluster
-#Chọn Kubernetes version: 1.21
-#Chọn VPC: default
-#Chọn Subnets: Chọn tất cả các subnet
-#Chọn Security group: default
-#Chọn Service role: default
-#Chọn Role for cluster: default
-#Chọn Create
-
-# Step 2: Tạo Node Group
-#Chọn Node Group -> Create Node Group
-#Chọn Node Group name: devops-test-eks-node-group
-#Chọn Kubernetes version: 1.21
-#Chọn Node IAM Role: default
-#Chọn Node Group role: default
-#Chọn Node Group type: On-demand
-#Chọn AMI type: Amazon Linux 2
-#Chọn Instance type: t3.medium
-#Chọn SSH key pair: Chọn keypair của bạn.
-#Chọn Subnets: Chọn tất cả các subnet
-#Chọn Security group: default
-#Chọn Create
-
-# Step 3: Cấu hình kubectl
-#Chạy lệnh sau để cấu hình kubectl:
-aws eks --region us-west-2 update-kubeconfig --name devops-test-eks-cluster
-#Kiểm tra kết quả:
-kubectl get nodes
-#Kết quả:
-#NAME                                           STATUS   ROLES    AGE   VERSION
+#==========Phương án sử dụng AWS Console==========
+#Các bạn có thể tham khảo guide sau:
+https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
 
 
-#Su dung eksctl:
+#==========Phương án sử dụng EKSCTL==========
+#Guide hướng dẫn gốc của AWS: 
+https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
+#Yêu cầu máy các bạn đã cài sẵn các tool:
+- aws cli (Chú ý không sử dụng version quá cũ!)
+- kubectl #Link: https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/
+- eksctl  #Link cài eksctl cho windows: https://eksctl.io/installation/
+- helm    #https://helm.sh/docs/intro/install/
+#NOTE: các bạn nên sử dụng chocolatey để cài eksctl & kubectl & helm cho windows.
+#Kiểm tra version:
+aws --version
+kubectl version --client
+eksctl version
+helm version --short
+
+#===Step 1: Tạo EKS Cluster===
 eksctl create cluster --name devops-test-cluster --region ap-southeast-1 --without-nodegroup
+#Quá trình tạo cluster sẽ mất tâm 5 phút.
+
+#===Step 2: Chạy lệnh sau để update file config trong thư mục ~/.kube/config (Đối với windows là: C:\Users\{username}\.kube\config)
 aws eks update-kubeconfig --region ap-southeast-1 --name devops-test-cluster
 
 #Check context
 kubectl config get-contexts
-#Set context to cluster:
+#[Optional] Set context nếu có nhiều cluster và current context chưa đúng.
 kubectl config use-context devops-test-cluster
-eksctl create nodegroup --cluster=devops-test-cluster --region=region-code --name=my-node-group --node-type=t3.medium --nodes=2 --nodes-min=2 --nodes-max=2 --managed
+
+#Get cluster info
+kubectl cluster-info
+#Kết quả:
+Kubernetes control plane is running at https://<8945378295HFEHFJRHEIWUO7549283>.gr7.ap-southeast-1.eks.amazonaws.com
+CoreDNS is running at https://<8945378295HFEHFJRHEIWUO7549283>.gr7.ap-southeast-1.eks.amazonaws.com/api/v1/
+
+#===Step 3: Tạo node group gồm 2 node t3.medium
+eksctl create nodegroup --cluster=devops-test-cluster --region=ap-southeast-1 --name=my-node-group --node-type=t3.medium --nodes=2 --nodes-min=2 --nodes-max=2 --managed
+
+#===Step 3: Đợi khoảng 5 phút, kiểm tra node
+kubectl get nodes
+
