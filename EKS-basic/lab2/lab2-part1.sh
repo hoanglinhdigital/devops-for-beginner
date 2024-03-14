@@ -1,7 +1,7 @@
 #Triển khai một set ứng dụng đơn giản lên EKS
 #YÊU CẦU: 
 #  - Đã tạo thành công cluster ở lab1.
-#  - Đã cài đặt eksctl, kubectl, aws cli.
+#  - Đã cài đặt eksctl, kubectl, aws cli, helm
 
 #===Phần 1=========
 #Follow guide sau để cài OIDC cho cluster:

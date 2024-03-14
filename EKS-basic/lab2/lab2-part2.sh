@@ -4,7 +4,7 @@
 #Apply config cho EKS Cluster
 #Truy cập thử thông qua ALB.
 
-#==Step1: Tạo một file config bao gồm các hạng mục:
+#===Step 1: Tạo một file config bao gồm các hạng mục:
 # - Deployment cho Frontend
 # - Service cho Frontend
 # - Deployment cho Backend
@@ -14,15 +14,18 @@
 #Chi tiết tham khảo file demo-app.yaml
 
 
-#==Step2: Apply file config
+#===Step 2: Apply file config
 kubectl apply -f demo-app.yaml
 
-#==Step3: Kiểm tra các resource đã được tạo ra
+#===Step 3: Kiểm tra các resource đã được tạo ra
 kubectl get deployment
 kubectl get service
 kubectl get ingress
 
-#==Step4: Truy cập ứng dụng thông qua DNS của ALB
+#===Step 4: Truy cập ứng dụng thông qua DNS của ALB
 
-#==Step5: Xoá resource [Optional nếu các bạn không muốn tiếp tục sử dụng]
+#===Step 5: Xoá resource
 kubectl delete -f demo-app.yaml
+
+#===Step 6: Xoá EKS Cluster (Hoặc giữ lại để thực hành luôn bài lab tiếp theo)
+eksctl delete cluster --name devops-test-cluster --region ap-southeast-1
