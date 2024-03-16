@@ -29,7 +29,7 @@ kubectl apply -f demo-app.yaml
 kubectl get storageclass
 kubectl get pvc
 kubectl get pv
-kuebctl get pods
+kubectl get pods
 kubectl get deployment
 kubectl get service
 kubectl get ingress

@@ -23,6 +23,8 @@
 
 #===Step 3:
 #Cấu hình aws cli để sử dụng user mới tạo (tạo thêm 1 profile developer01)
+aws configure --profile developer01
+#Check file config
 [developer01]
 aws_access_key_id = AAAAAAAAAAAAAAA
 aws_secret_access_key = bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

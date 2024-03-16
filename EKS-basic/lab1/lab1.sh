@@ -20,6 +20,9 @@ eksctl version
 helm version --short
 
 #===Step 1: Tạo EKS Cluster===
+#Kiểm tra IAM user đã có quyền tạo EKS Cluster
+aws sts get-caller-identity
+#Tạo cluster rỗng không có nodegroup ở trong.
 eksctl create cluster --name devops-test-cluster --region ap-southeast-1 --without-nodegroup
 #Quá trình tạo cluster sẽ mất tâm 5 phút.
 
@@ -42,4 +45,6 @@ eksctl create nodegroup --cluster=devops-test-cluster --region=ap-southeast-1 --
 
 #===Step 3: Đợi khoảng 5 phút, kiểm tra node
 kubectl get nodes
+
+#Kết thúc bài lab, các bạn đã tạo thành công một EKS Cluster và kết nối tới nó.
 

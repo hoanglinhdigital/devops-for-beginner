@@ -1,0 +1,1 @@
+eksctl delete cluster --name devops-test-cluster --region ap-southeast-1
