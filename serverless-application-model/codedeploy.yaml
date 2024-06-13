@@ -1,0 +1,4 @@
+AutoPublishAlias: live
+
+DeploymentPreference:
+      Type: Canary10Percent10Minutes
