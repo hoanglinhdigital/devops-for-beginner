@@ -6,6 +6,11 @@ From: https://docs.aws.amazon.com/serverless-application-model/latest/developerg
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html
 # Cài sẵn python 3.11
 
+# Có thể kiểm tra bằng các lệnh sau nếu chưa chắc chắn:
+python --version
+sam --version
+aws --version
+
 # Step 1 - Chuẩn bị access key tại local cho AWS CLI, có thể kiểm tra lại bằng lệnh sau:
 aws sts get-caller-identity
 
@@ -24,10 +29,10 @@ sam deploy --guided
 
 # Chỉnh sửa file python lambda và deploy lại
 sam build
-sam deploy --stack-name sam-demo-1 --parameter-overrides Stage=Stage
+sam deploy --guided
 
 # Step 5 - Xoá resource bằng cách xoá CloudFormation stack trên console hoặc sd lệnh sau
-sam delete --stack-name sam-demo-1
+sam delete --stack-name sam-app
 
 # Thông tin thêm: sử dụng SAM để test API ở local.
 sam local start-api
