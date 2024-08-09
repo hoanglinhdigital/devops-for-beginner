@@ -21,15 +21,10 @@ phases:
       - docker build -t nodejs-random-color .
       - docker tag nodejs-random-color:latest $REPOSITORY_URI:latest
       - docker tag nodejs-random-color:latest $REPOSITORY_URI:$COMMIT_HASH
-      - echo Writing image definitions file...
-      - printf '[{"name":"nodejs-container","imageUri":"%s"}]'
-        $REPOSITORY_URI:$COMMIT_HASH > imagedefinitions.json
-      - cat imagedefinitions.json
+
   post_build:
     commands:
       - echo Pushing the Docker image...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$COMMIT_HASH
       - echo Build completed on `date`
-artifacts:
-  files: imagedefinitions.json
