@@ -3,16 +3,13 @@
 # Build
 # Push artifact lên S3. 
 
-#===Step1===
-#Tạo một repository trên Github, tên repo: 
-nodejs-random-color-linh
-#Cấu hình SSH key hoặc username/password để push code lên repo.
-#Thử checkout code từ Github.
+#Step1: Đăng nhập thành công vào Github, cấu hình SSH key để checkout source code nếu cần.
+#*Tham khảo lại chương Thao tác cơ bản với Git.
 
-#===Step2=== Chuẩn bị source code.
-#Checkout repo sau (Nodejs + Webpack):
+#Step2: Fork repository sau với một tên mới 
 https://github.com/hoanglinhdigital/nodejs-random-color
-#Copy vào trong thư mục Github project, modify nếu cần, push lên Github repository của bạn.
+#Tên repo vd: 
+nodejs-random-color-yyyymmdd
 
 #===Step3===
 #tạo một ECR Repository để chứa docker image. Ví dụ:
@@ -31,7 +28,7 @@ udemy-devops-nodejs-docker-build
 #Chọn repository (các bạn đã làm bài lab2 không cần login lại với Github)
 #Chọn Source: Github, nhấn nút Connect to Github, sẽ mở ra một popup yêu cầu login vào Github và cấp quyền cho CodeBuild.
 #Sau khi login thành công, quay trở lại màn hình CodeBuild, chọn repository:
-nodejs-random-color-linh
+nodejs-random-color-yyyymmdd
 #Branch: chọn "master"
 
 #Chọn Environment: 

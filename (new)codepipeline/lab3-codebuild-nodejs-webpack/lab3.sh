@@ -3,15 +3,13 @@
 # Build
 # Push artifact lên S3. 
 
-#Step1: Tạo một repository trên Github
-#*Yêu cầu đã cấu hình SSH Key hoặc username/password để push code lên repo.
-#Tên repo: 
-nodejs-webpack-linh
+#Step1: Đăng nhập thành công vào Github, cấu hình SSH key để checkout source code nếu cần.
+#*Tham khảo lại chương Thao tác cơ bản với Git.
 
-#Step2: Chuẩn bị source code.
-#Checkout repo sau (Nodejs + Webpack):
-https://github.com/hoanglinhdigital/simple-vue-webpack.git
-#Copy vào trong thư mục Github project, modify nếu cần, push lên Github repository của bạn.
+#Step2: Fork repository sau với một tên mới 
+https://github.com/hoanglinhdigital/simple-vue-webpack
+#Tên repo vd: 
+simple-vue-webpack-yyyymmdd
 
 #Step3: tạo một S3 bucket để chứa artifact (bỏ qua nếu đã tạo trong bài lab trước). Ví dụ:
 udemy-devops-codebuild-linh
@@ -24,7 +22,7 @@ udemy-devops-nodejs-project-build
 #Chọn Source: Github, nhấn nút Connect to Github, sẽ mở ra một popup yêu cầu login vào Github và cấp quyền cho CodeBuild.
 #Sau khi login thành công, quay trở lại màn hình CodeBuild, chọn repository:
 
-nodejs-webpack-linh
+simple-vue-webpack
 #Branch: chọn "master"
 
 #Chọn Environment: 
@@ -53,6 +51,5 @@ nodejs-webpack-linh
 #Troubleshooting lỗi permission nếu có.
 #Nếu bị lỗi không tạo được cloudwatch Log, không pull được code hoặc acces S3, các bạn thêm các policy sau vào role của CodeBuild service role.
 AmazonS3FullAccess
-AWSGithubFullAccess
 CloudWatchFullAccessV2
 CloudWatchLogsFullAccess
