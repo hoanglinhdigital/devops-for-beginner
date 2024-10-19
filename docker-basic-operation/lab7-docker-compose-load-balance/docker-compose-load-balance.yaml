@@ -9,7 +9,7 @@ services:
     environment:
       - NODE_ENV=development
     deploy:
-      replicas: 3
+      replicas: 2
       restart_policy:
         condition: always
     networks:

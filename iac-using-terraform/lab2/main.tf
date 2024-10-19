@@ -9,10 +9,12 @@ resource "aws_key_pair" "udemy-keypair" {
 
 resource "aws_instance" "demo-instance" {
   ami           = "ami-0fa377108253bf620" # ami-0e4b5d31e60aa0acd
-  instance_type = "t3.medium"
+  instance_type = "t3.large"
   key_name      = aws_key_pair.udemy-keypair.key_name
   tags = {
     Name = "Udemy Demo"
+    Company = "CMC-Japan"
+    Domain = "DevOps"
   }
   vpc_security_group_ids = [aws_security_group.test-security-group.id]
 }

@@ -8,6 +8,7 @@ services:
       - 8080:3000
     volumes:
       - ./web:/app  #This help mount working directory with container volume. Allow auto reload when code change.
+      - /app/node_modules  
     environment:
       - NODE_ENV=development
   
