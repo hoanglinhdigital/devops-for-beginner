@@ -40,6 +40,11 @@ def lambda_handler(event, context):
         )
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',  # Allow requests from any origin
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',  # Allow the Content-Type header
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',  # Allow OPTIONS and POST methods
+            },
             'body': json.dumps({'short_url_code': short_url})
         }
     except Exception as e:

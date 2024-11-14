@@ -20,6 +20,7 @@ resolve_s3 = true
 s3_prefix = "url-shorten-app"
 region = "ap-southeast-1"
 image_repositories = []
+disable_rollback = true
 
 [default.package.parameters]
 resolve_s3 = true

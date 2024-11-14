@@ -24,6 +24,9 @@ def lambda_handler(event, context):
         return {
             'statusCode': 308,
             'headers': {
+                'Access-Control-Allow-Origin': '*',  # Allow requests from any origin
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',  # Allow the Content-Type header
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',  # Allow OPTIONS and POST methods
                 'Location': response['Item']['original_url']
             },
             'body': json.dumps({'status': 'redirecting', 'url': response['Item']['original_url']})
