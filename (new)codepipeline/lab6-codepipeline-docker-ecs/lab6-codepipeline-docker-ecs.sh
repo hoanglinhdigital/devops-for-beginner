@@ -23,7 +23,7 @@
 #Mục đích thay đổi là tạo ra file imagedefinitions.json để sử dụng cho CodeDeploy.
 
 #===Step3=== Tạo một Deploy Application trong CodeDeploy có nhiệm vụ deploy theo phương pháp rollout lên ECS Cluster.
-udemy-devops-deploy-ecs-pipeline-rollout
+cmc-devops-deploy-ecs-pipeline-rollout
 #Chọn tạo ra new ServiceRole, Rolename: 
 AWSCodePipeline-deploy-ecs-pipeline-rollout-role
 
