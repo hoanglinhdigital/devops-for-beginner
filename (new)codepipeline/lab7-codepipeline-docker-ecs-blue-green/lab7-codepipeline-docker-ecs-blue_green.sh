@@ -85,8 +85,12 @@ udemy-devops-ecs-nodejs-deployment-group
     - taskdef.json: copy nguyên từ Github repo trong quá trình build.
     
 #Read: https://docs.aws.amazon.com/codepipeline/latest/userguide/file-reference.html#file-reference-ecs-bluegreen
+#===Step 2: Edit file: appspec.yaml trong repository của bạn.
+#Chỉnh sửa appspec.yaml, sửa dòng sau thành Task Definition ARN của bạn:
+TaskDefinition: "arn:aws:ecs:ap-southeast-1:430950558682:task-definition/nodejs-task-definition"
 
-#===Step2: Tạo một Pipeline trong CodePipeline.
+
+#===Step3: Tạo một Pipeline trong CodePipeline.
 udemy-devops-deploy-ecs-pipeline-blue-green
 #Version chọn V2
 #Service role: Chọn tạo role mới hoặc lấy lại role cũ.
@@ -110,7 +114,7 @@ nodejs-random-color-linh
 #Review và nhấn: Create pipeline.
 #Ngay sau khi pipeline được tạo ra, nhấn stop pipeline để dừng pipeline.
 
-#===Step3: Modify source code và push lên Github
+#===Step 4: Modify source code và push lên Github
 # Theo dõi pipeline được trigger tự động.
 # Theo dõi trạng thái của ECS Cluster - Nodejs Service.
 # Theo dõi trạng thái deploy của CodeDeploy

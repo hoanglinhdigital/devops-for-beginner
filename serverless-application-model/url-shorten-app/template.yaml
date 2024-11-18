@@ -30,7 +30,7 @@ Resources:
     Properties:
       CodeUri: hello_world/
       Handler: app.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.13
       Architectures:
       - x86_64
       Events:
@@ -46,7 +46,7 @@ Resources:
     Properties:
       CodeUri: generate_short_url/
       Handler: app.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.13
       Architectures:
       - x86_64
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -54,7 +54,7 @@ Resources:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /generate-short-url
+            Path: /api/generate-short-url
             Method: post
             RestApiId: !Ref MyApi
   # Function to get original URL from short URL
@@ -63,7 +63,7 @@ Resources:
     Properties:
       CodeUri: get_url/
       Handler: app.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.13
       Architectures:
       - x86_64
       Role: !GetAtt LambdaExecutionRole.Arn
