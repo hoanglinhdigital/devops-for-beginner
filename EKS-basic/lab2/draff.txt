@@ -14,3 +14,25 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set clusterName=devops-test-cluster \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller 
+
+
+eksctl create iamserviceaccount \
+  --cluster=devops-test-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::430950558682:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=devops-test-cluster \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller
+
+eksctl create fargateprofile \
+    --cluster devops-test-cluster \
+    --region ap-southeast-1 \
+    --name alb-sample-app \
+    --namespace game-2048

@@ -68,7 +68,7 @@ kubectl describe ingress/ingress-nginx
 #===Step8: Tạo LoadBalancer + Target Group
 #Tạo một alb-security-group, rule HTTP:80 cho phép truy cập từ mọi nơi.
 #Tạo một APplication Load Balancer, listerner port 80
-#Tạo một target group type Instance, port HTTP:30927 (*số 30297 lấy từ câu lệnh kubectl "get services -n ingress-nginx")
+#Tạo một target group type Instance, port HTTP:30927 (*số 30297 lấy từ câu lệnh kubectl get services -n ingress-nginx)
 #Cấu hình security group của các instance cho phép truy cập từ alb-security-group (All traffic).
 #Truy cập vào Load Balancer thông qua DNS, test ứng dụng.
 

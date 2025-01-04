@@ -24,7 +24,7 @@ helm version --short
 aws sts get-caller-identity
 #Tạo cluster rỗng không có nodegroup ở trong.
 eksctl create cluster --name devops-test-cluster --region ap-southeast-1 --without-nodegroup
-#Quá trình tạo cluster sẽ mất tâm 5 phút.
+#Quá trình tạo cluster sẽ mất ~10 phút.
 
 #===Step 2: Chạy lệnh sau để update file config trong thư mục ~/.kube/config (Đối với windows là: C:\Users\{username}\.kube\config)
 aws eks update-kubeconfig --region ap-southeast-1 --name devops-test-cluster

@@ -19,3 +19,8 @@ variable "keypair_path" {
   default = "./keypair/udemy-key.pub"
   
 }
+variable "dummy" {
+  type = string
+  default = "dummy_value"
+  
+}
