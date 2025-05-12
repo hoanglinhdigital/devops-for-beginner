@@ -7,7 +7,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "udemy-terraform-state-singapore-tuan"
+    bucket         = "udemy-terraform-state-singapore-tuan-01"
     key            = "udemy-terraform"
     region         = "ap-southeast-1"
     dynamodb_table = "udemy-terraform-state"
