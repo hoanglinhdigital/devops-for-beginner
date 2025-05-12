@@ -10,7 +10,7 @@ terraform {
     bucket         = "udemy-terraform-state-tokyo-tuan-01"
     key            = "udemy-terraform"
     region         = "ap-northeast-1"
-    dynamodb_table = "udemy-terraform-state"
+    dynamodb_table = "udemy-terraform-state-01"
   }
 }
 provider "aws" {
