@@ -1,0 +1,89 @@
+name: Deploy to ECS
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to deploy'
+        required: true
+        type: string
+      cluster_name:
+        description: 'ECS Cluster name'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version tag to deploy'
+        required: true
+        type: string
+      cluster_name:
+        description: 'ECS Cluster name'
+        required: true
+        type: string
+
+env:
+  AWS_REGION: ap-southeast-1
+  ECR_REGISTRY: 799227077423.dkr.ecr.ap-southeast-1.amazonaws.com
+  ECR_REPOSITORY: nodejs-random-color-0529
+  TASK_FAMILY: nodejs-task-definition
+  SERVICE_NAME: nodejs-service
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        mask-aws-account-id: false
+        
+    - name: Update ECS task definition and deploy
+      run: |
+        # Set the full image URI
+        FULL_IMAGE="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ inputs.version }}"
+        
+        # Get current task definition
+        TASK_DEFINITION=$(aws ecs describe-task-definition \
+          --task-definition ${{ env.TASK_FAMILY }} \
+          --region ${{ env.AWS_REGION }})
+        
+        # Create new task definition with updated image
+        NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$FULL_IMAGE" '
+          .taskDefinition | 
+          .containerDefinitions[0].image = $IMAGE | 
+          del(.taskDefinitionArn) | 
+          del(.revision) | 
+          del(.status) | 
+          del(.requiresAttributes) | 
+          del(.compatibilities) | 
+          del(.registeredAt) | 
+          del(.registeredBy)')
+        
+        # Register new task definition
+        NEW_TASK_INFO=$(aws ecs register-task-definition \
+          --region ${{ env.AWS_REGION }} \
+          --cli-input-json "$NEW_TASK_DEFINITION")
+        
+        # Get new revision number
+        NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
+        
+        # Update service with new task definition
+        aws ecs update-service \
+          --cluster ${{ inputs.cluster_name }} \
+          --service ${{ env.SERVICE_NAME }} \
+          --task-definition ${{ env.TASK_FAMILY }}:${NEW_REVISION} \
+          --force-new-deployment
+        
+        # Set desired count to 2
+        aws ecs update-service \
+          --cluster ${{ inputs.cluster_name }} \
+          --service ${{ env.SERVICE_NAME }} \
+          --desired-count 2
+        
+        echo "Deployed version ${{ inputs.version }} to cluster ${{ inputs.cluster_name }}"
+        echo "New task definition revision: ${NEW_REVISION}"

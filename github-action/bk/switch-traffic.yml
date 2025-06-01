@@ -1,0 +1,85 @@
+name: Switch ALB Traffic
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+env:
+  AWS_REGION: ap-southeast-1
+  ALB_ARN: arn:aws:elasticloadbalancing:ap-southeast-1:799227077423:loadbalancer/app/udemy-devops-alb/4d92fdb74f141347
+
+jobs:
+  switch-traffic:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        mask-aws-account-id: false
+        
+    - name: Switch traffic between blue and green environments
+      run: |
+        echo "🔍 Getting ALB listener information..."
+        
+        # Get all listeners for the load balancer
+        LISTENERS=$(aws elbv2 describe-listeners --load-balancer-arn ${{ env.ALB_ARN }})
+        
+        echo "Raw listeners response:"
+        echo "$LISTENERS" | jq '.'
+        
+        # Extract listener ARNs and their target groups
+        LISTENER_1_ARN=$(echo "$LISTENERS" | jq -r '.Listeners[0].ListenerArn // empty')
+        LISTENER_1_TG=$(echo "$LISTENERS" | jq -r '.Listeners[0].DefaultActions[0].TargetGroupArn // empty')
+        
+        LISTENER_2_ARN=$(echo "$LISTENERS" | jq -r '.Listeners[1].ListenerArn // empty')
+        LISTENER_2_TG=$(echo "$LISTENERS" | jq -r '.Listeners[1].DefaultActions[0].TargetGroupArn // empty')
+        
+        # Validate that we have the required values
+        if [ -z "$LISTENER_1_ARN" ] || [ -z "$LISTENER_2_ARN" ] || [ -z "$LISTENER_1_TG" ] || [ -z "$LISTENER_2_TG" ]; then
+          echo "❌ Error: Could not extract listener information"
+          echo "Listener 1 ARN: '$LISTENER_1_ARN'"
+          echo "Listener 1 TG: '$LISTENER_1_TG'"
+          echo "Listener 2 ARN: '$LISTENER_2_ARN'"
+          echo "Listener 2 TG: '$LISTENER_2_TG'"
+          exit 1
+        fi
+        
+        echo "📋 Current Configuration:"
+        echo "Listener 1 ARN: $LISTENER_1_ARN"
+        echo "Listener 1 Target Group: $LISTENER_1_TG"
+        echo "Listener 2 ARN: $LISTENER_2_ARN"
+        echo "Listener 2 Target Group: $LISTENER_2_TG"
+        
+        echo ""
+        echo "🔄 Switching traffic..."
+        echo "- Listener 1 will point to: $LISTENER_2_TG"
+        echo "- Listener 2 will point to: $LISTENER_1_TG"
+        
+        # Switch traffic by swapping target groups
+        echo "Updating Listener 1..."
+        aws elbv2 modify-listener \
+          --listener-arn "$LISTENER_1_ARN" \
+          --default-actions Type=forward,TargetGroupArn="$LISTENER_2_TG"
+        
+        echo "Updating Listener 2..."
+        aws elbv2 modify-listener \
+          --listener-arn "$LISTENER_2_ARN" \
+          --default-actions Type=forward,TargetGroupArn="$LISTENER_1_TG"
+        
+        echo ""
+        echo "✅ Traffic switch completed successfully!"
+        
+        # Verify the changes
+        echo "🔍 Verifying traffic switch..."
+        UPDATED_LISTENERS=$(aws elbv2 describe-listeners --load-balancer-arn ${{ env.ALB_ARN }})
+        
+        NEW_LISTENER_1_TG=$(echo "$UPDATED_LISTENERS" | jq -r '.Listeners[0].DefaultActions[0].TargetGroupArn')
+        NEW_LISTENER_2_TG=$(echo "$UPDATED_LISTENERS" | jq -r '.Listeners[1].DefaultActions[0].TargetGroupArn')
+        
+        echo "📋 New Configuration:"
+        echo "Listener 1 now points to: $NEW_LISTENER_1_TG"
+        echo "Listener 2 now points to: $NEW_LISTENER_2_TG"

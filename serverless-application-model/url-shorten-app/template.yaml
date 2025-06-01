@@ -30,7 +30,7 @@ Resources:
     Properties:
       CodeUri: hello_world/
       Handler: app.lambda_handler
-      Runtime: python3.13
+      Runtime: python3.11
       Architectures:
       - x86_64
       Events:
@@ -46,7 +46,7 @@ Resources:
     Properties:
       CodeUri: generate_short_url/
       Handler: app.lambda_handler
-      Runtime: python3.13
+      Runtime: python3.11
       Architectures:
       - x86_64
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -63,7 +63,7 @@ Resources:
     Properties:
       CodeUri: get_url/
       Handler: app.lambda_handler
-      Runtime: python3.13
+      Runtime: python3.11
       Architectures:
       - x86_64
       Role: !GetAtt LambdaExecutionRole.Arn

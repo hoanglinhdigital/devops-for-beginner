@@ -1,0 +1,65 @@
+name: Clear ECS Resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      cluster_name:
+        description: 'ECS Cluster name to clear resources from'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      cluster_name:
+        description: 'ECS Cluster name to clear resources from'
+        required: true
+        type: string
+
+env:
+  AWS_REGION: ap-southeast-1
+  SERVICE_NAME: nodejs-service
+
+jobs:
+  clear-resources:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        mask-aws-account-id: false
+        
+    - name: Stop all tasks and scale down service
+      run: |
+        echo "Clearing resources from cluster: ${{ inputs.cluster_name }}"
+        
+        # Get all running tasks in the cluster
+        TASK_ARNS=$(aws ecs list-tasks \
+          --cluster "${{ inputs.cluster_name }}" \
+          --query 'taskArns[]' \
+          --output text)
+        
+        if [ -n "$TASK_ARNS" ]; then
+          echo "Stopping running tasks..."
+          for task_arn in $TASK_ARNS; do
+            echo "Stopping task: $task_arn"
+            aws ecs stop-task \
+              --cluster "${{ inputs.cluster_name }}" \
+              --task "$task_arn" \
+              --no-cli-pager
+          done
+        else
+          echo "No running tasks found in cluster ${{ inputs.cluster_name }}"
+        fi
+        
+        # Scale down the service to 0 desired count
+        echo "Scaling service ${{ env.SERVICE_NAME }} to 0 desired count..."
+        aws ecs update-service \
+          --cluster "${{ inputs.cluster_name }}" \
+          --service ${{ env.SERVICE_NAME }} \
+          --desired-count 0
+        
+        echo "Resource cleanup completed for cluster ${{ inputs.cluster_name }}"
+        echo "Service ${{ env.SERVICE_NAME }} scaled to 0 desired count"

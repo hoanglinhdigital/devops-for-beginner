@@ -1,0 +1,87 @@
+name: Unit test on Develop
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18' # or your preferred Node.js version
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Start development server
+      run: |
+        npm run dev &
+        echo $! > server.pid
+      
+    - name: Wait for server to start
+      run: |
+        echo "Waiting for server to start..."
+        timeout=60
+        counter=0
+        
+        while [ $counter -lt $timeout ]; do
+          if curl -f -s http://localhost:3000 > /dev/null 2>&1; then
+            echo "Server is up and running!"
+            break
+          fi
+          
+          echo "Waiting for server... ($counter/$timeout)"
+          sleep 2
+          counter=$((counter + 2))
+        done
+        
+        if [ $counter -ge $timeout ]; then
+          echo "Server failed to start within $timeout seconds"
+          exit 1
+        fi
+
+    - name: Test website availability
+      run: |
+        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+        
+        if [ "$response" = "200" ]; then
+          echo "✅ Website is accessible - HTTP status: $response"
+        else
+          echo "❌ Website test failed - HTTP status: $response"
+          exit 1
+        fi
+
+    - name: Additional health check (optional)
+      run: |
+        # Test if the response contains expected content
+        content=$(curl -s http://localhost:3000)
+        
+        if echo "$content" | grep -q "<!DOCTYPE html\|<html"; then
+          echo "✅ Website returned valid HTML content"
+        else
+          echo "❌ Website did not return valid HTML content"
+          exit 1
+        fi
+
+    - name: Cleanup
+      if: always()
+      run: |
+        if [ -f server.pid ]; then
+          kill $(cat server.pid) || true
+          rm server.pid
+        fi
+        # Kill any remaining node processes
+        pkill -f "npm run dev" || true
+        pkill -f "node.*dev" || true
