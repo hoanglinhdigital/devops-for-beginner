@@ -10,36 +10,34 @@ kops export kubecfg --name=hoanglinhdigital.com --state=s3://udemy-devops-kops
 #kOps has set your kubectl context to hoanglinhdigital.com
 #[Optional] nếu bạn muốn thao tác với cluster từ máy local, hãy copy file ~/.kube/config từ server kops về máy local.
 
-#===Step1: Checkout repository sau (hoặc bất cứ project docker compose nào bạn thích):
-https://github.com/docker/awesome-compose
-#Repository bao gồm rất nhiều bài lab, ở đây mình chọn bài lab trong thư mục này để hướng dẫn các bạn:
-react-express-mongodb
-#*Repository backup cho trường hợp repo bên trên bị xóa:
+#===Step1: Checkout repository sau:
 https://github.com/hoanglinhdigital/react-express-mongodb
 
-
 #===Step2: Chạy thử bằng lệnh Docker Compose
-cd react-express-mongodb
-docker-compose -f compose.yaml up -d
-#Kiểm tra trạng thái các container:
-docker-compose ps
-#Truy cập thử vào localhost:3000
-#Nếu chạy OK ta mới tiến hành step tiếp theo.
+- Navigate to `frontend` folder, find `package.json_local` and copy line No 30 to file `package.json`  
+ ```"proxy": "http://backend:3000"```  
+ *Make sure to correct Json format.
+- Step 2: Navigate to root level of the repository and run:
+```docker-compose up -d```
+- Step 3: Open browser `localhowst:3000` to test the app.
+- Step 4: Now your app is ready to deploy to any environment like Minikube, EKS or Kubernetes.
+- Step 5: Remove line 30 in `package.json` to avoid proxy error when deploy to K8s, EKS.
+- Step 6: [Optional] Remove DockerCompose resources by running `docker-compose down --volumes`
 
 #===Step3: Build các Docker image và push lên ECR.
 # - Tạo các ECR repositories cho các image
 # - Build các image và push lên ECR
-#LƯU Ý cho phần frontend, các bạn chỉnh sửa file package.json và xoá dòng proxy để tránh chạy lỗi trên Kubernetes.
+#LƯU Ý cho phần frontend, các bạn chỉnh sửa file package.json và DELETE dòng proxy để tránh chạy lỗi trên Kubernetes.
 "proxy": "http://backend:3000",
 
 
 #===Step4: Tạo các file kubernetes config cho các resource
-# - Tạo file kubernetes config cho React-Backend
-# - Tạo file kubernetes config cho Express-Frontend
-# - Tạo file kubernetes config cho MongoDB
-# - Tạo file kubernetes config cho Ingress Nginx với 2 route /api -> backend và / -> frontend
+# - Tạo kubernetes config cho React-Backend
+# - Tạo kubernetes config cho Express-Frontend
+# - Tạo kubernetes config cho MongoDB
+# - Tạo kubernetes config cho Ingress Nginx với 2 route /api -> backend và / -> frontend
 
-#===Step5: Tạo Ingress NGinx Controller bằng cách tham khảo guide sau:
+#===Step5: Tạo Ingress Nginx Controller bằng cách tham khảo guide sau:
 https://github.com/kubernetes/ingress-nginx/blob/main/docs%2Fdeploy%2Findex.md
 #Keyword: Bare metal clusters
 #Hoặc các bạn cũng có thể copy lệnh sau chạy luôn:

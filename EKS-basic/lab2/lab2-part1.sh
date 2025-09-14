@@ -7,7 +7,7 @@
 #Follow guide sau để cài OIDC cho cluster:
 https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
 #Follow guide sau để cài đặt plugin ALB Ingress Controller
-https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html
 #Apply ứng dụng Sample (2048 game):
 https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#application-load-balancer-sample-application
 
