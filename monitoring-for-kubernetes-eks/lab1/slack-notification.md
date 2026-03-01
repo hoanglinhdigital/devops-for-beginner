@@ -10,8 +10,8 @@ This guide will walk you through setting up Slack notifications for your Prometh
 5. Copy the **Webhook URL** provided (it will look like `https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX`). You will need this URL for the Alertmanager configuration.
 
 ## 2. Update Alertmanager Configuration
-Update file: `todo-app-monitoring-stack.yaml`.
-Replace: # AlertManager ConfigMap with content in the file: `alert-manager-configmap-for-slack.yaml`. *Dont forget to replace slack webhook url and channel name with your own.
+Update Webhook URL and channel name in file: `alert-manager-configmap-for-slack.yaml.  
+Update file: `todo-app-monitoring-stack.yaml`, Replace: # AlertManager ConfigMap with content in the file: `alert-manager-configmap-for-slack.yaml`
 
 ## 3. Apply the Configuration
 Apply the updated ConfigMap to your Kubernetes cluster:
