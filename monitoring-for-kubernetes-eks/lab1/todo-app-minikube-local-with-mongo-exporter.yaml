@@ -3,9 +3,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mongo
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "27017"
 spec:
   type: ClusterIP
   selector:
@@ -28,21 +25,39 @@ spec:
   template:
     metadata:
       labels:
-        app: mongo
+        app: mongo 
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "27017"
+        prometheus.io/port: "9216"
     spec:
       containers:
       - name: mongo
         image: mongo:4.2.0
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"        
+        volumeMounts:
+        - name: mongo-storage
+          mountPath: /data/db
+      - name: mongo-exporter
+        image: bitnami/mongodb-exporter:latest
+        ports:
+        - containerPort: 9216
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://localhost:27017"
+      volumes:
+      - name: mongo-storage
+        persistentVolumeClaim:
+          claimName: mongo-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
 ---
 #Backend Service
 apiVersion: v1
@@ -51,7 +66,7 @@ metadata:
   name: backend
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "3000"  
+    prometheus.io/port: "3000"
 spec:
   type: ClusterIP
   selector:
@@ -82,26 +97,16 @@ spec:
       containers:
       - name: backend
         image: todo-app-backend:v0.0.1
-        ports:
-        - containerPort: 3000
         resources:
           requests:
             memory: "256Mi"
-            cpu: "250m"
           limits:
             memory: "512Mi"
-            cpu: "500m"
         env:
         - name: NODE_ENV
           value: "production"
-        # Add health check endpoints for monitoring
-        livenessProbe:
-          httpGet:
-            path: /api
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-
+        - name: MONGODB_URI
+          value: "mongodb://mongo:27017/tododb"            
 ---
 #Frontend Service
 apiVersion: v1
@@ -141,25 +146,11 @@ spec:
       containers:
       - name: frontend
         image: todo-app-frontend:v0.0.1
-        ports:
-        - containerPort: 3000
         resources:
           requests:
             memory: "256Mi"
-            cpu: "250m"
           limits:
-            memory: "512Mi"
-            cpu: "500m"
-        env:
-        - name: NODE_ENV
-          value: "production"
-        # Add health check endpoints for monitoring
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10  
+            memory: "512Mi"        
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
