@@ -7,7 +7,7 @@ data:
   alertmanager.yml: |
     global:
       resolve_timeout: 5m
-      slack_api_url: 'https://hooks.slack.com/services/T05PV06E99A/B0AHC0WPV8F/xxxxxxxxx<Replace with your own>'
+      slack_api_url: 'https://hooks.slack.com/services/T05xxxx/B0Axxxxx/xxxxxxxxx<Replace with your own>'
     
     route:
       group_by: ['alertname', 'cluster', 'service']
