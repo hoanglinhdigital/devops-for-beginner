@@ -1,0 +1,181 @@
+#Mongo
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+spec:
+  type: ClusterIP
+  selector:
+    app: mongo
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+---
+#Mongo Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo 
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9216"
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:4.2.0
+        volumeMounts:
+        - name: mongo-storage
+          mountPath: /data/db
+      - name: mongo-exporter
+        image: bitnami/mongodb-exporter:latest
+        ports:
+        - containerPort: 9216
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://localhost:27017"
+      volumes:
+      - name: mongo-storage
+        persistentVolumeClaim:
+          claimName: mongo-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+#Backend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3000"
+spec:
+  type: ClusterIP
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+#Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+        # Dòng quan trọng: Inject cấu hình tracing cho Node.js
+        instrumentation.opentelemetry.io/inject-nodejs: "monitoring/nodejs-instrumentation"        
+    spec:
+      containers:
+      - name: backend
+        image: todo-app-backend:v0.0.1
+        resources:
+          requests:
+            memory: "256Mi"
+          limits:
+            memory: "512Mi"
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: MONGODB_URI
+          value: "mongodb://mongo:27017/tododb"            
+---
+#Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3000"
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+#Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+        # Dòng quan trọng: Inject cấu hình tracing cho Node.js
+        instrumentation.opentelemetry.io/inject-nodejs: "monitoring/nodejs-instrumentation"        
+    spec:
+      containers:
+      - name: frontend
+        image: todo-app-frontend:v0.0.1
+        resources:
+          requests:
+            memory: "256Mi"
+          limits:
+            memory: "512Mi"        
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/api/"
+        backend:
+          service:
+            name: backend
+            port:
+              number: 3000
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 3000

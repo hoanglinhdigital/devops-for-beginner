@@ -1,0 +1,20 @@
+graph TD
+    subgraph "Kubernetes Cluster"
+        subgraph "Node 1..N (DaemonSet)"
+            FB[Filebeat Pod]
+            Logs[(Container Logs)]
+            Logs --> FB
+        end
+
+        subgraph "Monitoring Namespace"
+            LS[Logstash]
+            ES[(Elasticsearch)]
+            KB[Kibana]
+            
+            FB -- "Port 5044 (Beats)" --> LS
+            LS -- "Port 9200 (REST)" --> ES
+            KB -- "Queries" --> ES
+        end
+    end
+
+    User((Admin/Dev)) -- "Port 5601 (NodePort)" --> KB

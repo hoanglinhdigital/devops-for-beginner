@@ -1,0 +1,260 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: monitoring
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+    - protocol: TCP
+      port: 9200
+      targetPort: 9200
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
+        env:
+        - name: discovery.type
+          value: "single-node"
+        - name: ES_JAVA_OPTS
+          value: "-Xms512m -Xmx512m"
+        ports:
+        - containerPort: 9200
+        resources:
+          limits:
+            memory: "1Gi"
+          requests:
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: monitoring
+spec:
+  selector:
+    app: kibana
+  ports:
+    - protocol: TCP
+      port: 5601
+      targetPort: 5601
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.17.10
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://elasticsearch:9200"
+        ports:
+        - containerPort: 5601
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-configmap
+  namespace: monitoring
+data:
+  logstash.conf: |
+    input {
+      beats {
+        port => 5044
+      }
+    }
+    filter {
+      if [kubernetes][labels][app] in ["frontend", "backend"] {
+        mutate {
+          add_tag => ["todo-app"]
+        }
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["http://elasticsearch:9200"]
+        index => "todo-app-logs-%{+YYYY.MM.dd}"
+      }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+  namespace: monitoring
+spec:
+  selector:
+    app: logstash
+  ports:
+    - protocol: TCP
+      port: 5044
+      targetPort: 5044
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:7.17.10
+        ports:
+        - containerPort: 5044
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/share/logstash/pipeline/logstash.conf
+          subPath: logstash.conf
+      volumes:
+      - name: config-volume
+        configMap:
+          name: logstash-configmap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: monitoring
+data:
+  filebeat.yml: |
+    filebeat.autodiscover:
+      providers:
+        - type: kubernetes
+          node: ${NODE_NAME}
+          hints.enabled: true
+          hints.default_config:
+            type: container
+            paths:
+              - /var/log/containers/*${data.kubernetes.container.id}.log
+    
+    output.logstash:
+      hosts: ["logstash:5044"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: filebeat
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: filebeat
+rules:
+- apiGroups: [""]
+  resources:
+  - namespaces
+  - pods
+  - nodes
+  verbs:
+  - get
+  - watch
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: filebeat
+subjects:
+- kind: ServiceAccount
+  name: filebeat
+  namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: filebeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: filebeat
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: filebeat
+  template:
+    metadata:
+      labels:
+        app: filebeat
+    spec:
+      serviceAccountName: filebeat
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:7.17.10
+        args: [
+          "-c", "/etc/filebeat.yml",
+          "-e",
+        ]
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: config
+          mountPath: /etc/filebeat.yml
+          readOnly: true
+          subPath: filebeat.yml
+        - name: data
+          mountPath: /usr/share/filebeat/data
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          defaultMode: 0640
+          name: filebeat-config
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: data
+        hostPath:
+          path: /var/lib/filebeat-data
+          type: DirectoryOrCreate

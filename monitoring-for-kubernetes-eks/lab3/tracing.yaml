@@ -1,0 +1,52 @@
+# 1. Triển khai Jaeger All-In-One (Gọn nhẹ cho dự án nhỏ)
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-all-in-one
+  namespace: monitoring
+spec:
+  strategy: allInOne
+---
+# 2. Định nghĩa cấu hình Auto-Instrumentation cho Node.js
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: nodejs-instrumentation
+  namespace: monitoring
+spec:
+  exporter:
+    endpoint: http://otel-collector-collector.monitoring.svc.cluster.local:4318 # Gửi về Collector nằm trong namespace monitoring.
+  propagators:
+    - tracecontext
+    - baggage
+  sampler:
+    type: parentbased_always_on
+  nodejs:
+    image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-nodejs:latest
+---
+# 3. OpenTelemetry Collector (Cầu nối giữa App và Jaeger)
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: otel-collector
+  namespace: monitoring
+spec:
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+    processors:
+      batch:
+    exporters:
+      otlp:
+        endpoint: "jaeger-all-in-one-collector:4317"
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp]
