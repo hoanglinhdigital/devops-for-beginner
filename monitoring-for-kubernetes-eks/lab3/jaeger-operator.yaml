@@ -16209,7 +16209,7 @@ spec:
           value: DEBUG
         - name: KAFKA-PROVISIONING-MINIMAL
           value: "true"
-        image: quay.io/brancz/kube-rbac-proxy:v0.13.1
+        image: quay.io/jaegertracing/jaeger-operator:1.65.0
         livenessProbe:
           httpGet:
             path: /healthz
@@ -16242,7 +16242,7 @@ spec:
         - --upstream=http://127.0.0.1:8383/
         - --logtostderr=true
         - --v=0
-        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
+        image: quay.io/brancz/kube-rbac-proxy:v0.21.0
         name: kube-rbac-proxy
         ports:
         - containerPort: 8443
