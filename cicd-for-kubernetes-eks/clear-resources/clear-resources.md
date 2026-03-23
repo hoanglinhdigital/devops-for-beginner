@@ -3,7 +3,7 @@
 1. Delete EKS Cluster:
 ```bash
 # Delte node group:
-eksctl delete nodegroup --cluster devops-test-cluster --name my-nodes --drain=false --approve
+eksctl delete nodegroup --cluster devops-test-cluster --name my-nodes --drain=false
 # Delete cluster:
 eksctl delete cluster --name devops-test-cluster --force --disable-nodegroup-eviction
 ```
