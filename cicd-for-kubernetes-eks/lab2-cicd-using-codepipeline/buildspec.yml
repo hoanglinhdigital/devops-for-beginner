@@ -1,0 +1,50 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      # Install kubectl
+      # - curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl
+      # - chmod +x ./kubectl
+      # - mv ./kubectl /usr/local/bin/
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      # Detect folder changes using git (Requires 'Full clone' in CodePipeline Source Stage)
+      - |
+        if git show --name-only | grep -q "^backend/"; then export BUILD_BACKEND="true"; else export BUILD_BACKEND="false"; fi
+        if git show --name-only | grep -q "^frontend/"; then export BUILD_FRONTEND="true"; else export BUILD_FRONTEND="false"; fi
+        echo "Building Backend: $BUILD_BACKEND"
+        echo "Building Frontend: $BUILD_FRONTEND"
+  build:
+    commands:
+      - echo Build started on `date`
+      - |
+        if [ "$BUILD_BACKEND" = "true" ]; then
+          echo "Building the backend Docker image..."
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/todo-app-backend:$IMAGE_TAG ./backend
+        fi
+      - |
+        if [ "$BUILD_FRONTEND" = "true" ]; then
+          echo "Building the frontend Docker image..."
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/todo-app-frontend:$IMAGE_TAG ./frontend
+        fi
+  post_build:
+    commands:
+      - echo Pushing the Docker images...
+      - |
+        if [ "$BUILD_BACKEND" = "true" ]; then
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/todo-app-backend:$IMAGE_TAG
+          sed -i 's|todo-app-backend:v0.0.1|'$AWS_ACCOUNT_ID'.dkr.ecr.'$AWS_DEFAULT_REGION'.amazonaws.com/todo-app-backend:'$IMAGE_TAG'|g' minikube-local.yaml
+        fi
+      - |
+        if [ "$BUILD_FRONTEND" = "true" ]; then
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/todo-app-frontend:$IMAGE_TAG
+          sed -i 's|todo-app-frontend:v0.0.1|'$AWS_ACCOUNT_ID'.dkr.ecr.'$AWS_DEFAULT_REGION'.amazonaws.com/todo-app-frontend:'$IMAGE_TAG'|g' minikube-local.yaml
+        fi
+artifacts:
+  files:
+    - minikube-local.yaml

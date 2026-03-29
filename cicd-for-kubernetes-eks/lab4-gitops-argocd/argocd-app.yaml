@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todo-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hoanglinhdigital/todo-app-demo-gitops-manifests.git' # Thay bằng địa chỉ thực tế (URL Git)
+    targetRevision: HEAD
+    path: 'k8s-manifests' # Thư mục chứa file aws-eks.yaml
+  destination:
+    server: 'https://kubernetes.default.svc' # Deployment vào chính cluster hiện tại
+    namespace: default # Namespace muốn deploy ứng dụng (phải giống nơi bạn định deploy trên EKS)
+  syncPolicy:
+    automated: # Bật tính năng tự động đồng bộ khi Git thay đổi
+      prune: true
+      selfHeal: true
