@@ -9,5 +9,7 @@ Tất cả các repository liên quan sẽ được đề cập đến trong t�
         + others file: các resource, configuration file khác
         + terraform (optional): thư mục chứa terraform template dùng để triển khai infra cho bài lab trước khi bắt đầu.
     - lab(x)
+ 
+    - create pull request
 
 
